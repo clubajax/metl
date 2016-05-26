@@ -1,0 +1,14 @@
+<script>
+    ml.create({
+        tag: 'ml-list',
+        created: function () {
+            console.log('created');
+        },
+        attached: function () {
+            console.log('attached');
+        },
+        attributeChanged: function (prop, value) {
+            console.log('att change', prop, value);
+        }
+    });
+</script>

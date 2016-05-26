@@ -1,0 +1,27 @@
+{
+  "name": "metl",
+  "version": "0.0.1",
+  "description": "Core library for metl UI web components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clubajax/metl.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "UI"
+  ],
+  "author": "mike@mikewilcox.net",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/clubajax/metl/issues"
+  },
+  "homepage": "https://github.com/clubajax/metl#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-http-server": "^2.0.0"
+  }
+}

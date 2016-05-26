@@ -1,0 +1,14 @@
+{
+  "name": "metl",
+  "description": "Core library for metl UI web components",
+  "main": "metl.js",
+  "authors": [
+    "mike@mikewilcox.net"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "JavaScript",
+    "UI"
+  ],
+  "homepage": "https://github.com/clubajax/metl"
+}
