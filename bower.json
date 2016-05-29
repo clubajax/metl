@@ -10,5 +10,10 @@
     "JavaScript",
     "UI"
   ],
-  "homepage": "https://github.com/clubajax/metl"
+  "homepage": "https://github.com/clubajax/metl",
+  "dependencies": {
+    "on": "clubajax/on",
+    "dom": "clubajax/dom",
+    "heya-defer": "heya/defer#^1.1.0"
+  }
 }

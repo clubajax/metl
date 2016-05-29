@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <title>List Demo</title>
+    <link rel="import" href="../lib.html">
+    <link rel="import" href="./ml-test.html">
+    <style>
+        body{
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ay-list demo</h1>
+    <ml-test id="list">This is the innerHTML</ml-test>
+
+    <script>
+        var node = dom.query('ml-test');
+        //console.log('node', node);
+        setTimeout(function () {
+            node.parentNode.removeChild(node);
+            setTimeout(function () {
+                document.body.appendChild(node);
+            }, 300);
+        }, 300);
+    </script>
+</body>
+</html>
