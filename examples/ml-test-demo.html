@@ -1,18 +1,30 @@
 <!doctype html>
 <html>
 <head>
-    <title>List Demo</title>
+    <title>METL Demo</title>
     <link rel="import" href="../../lib/main.html">
     <link rel="import" href="./ml-test.html">
     <style>
         body{
             padding: 20px;
         }
+        ml-test{
+            display: block;
+        }
+        ml-test .content{
+            display: inline-block;
+            padding: 3px;
+            background: yellow;
+        }
+        ml-test .content span span{
+            padding: 0 3px;
+            background: red;
+        }
     </style>
 </head>
 <body>
-    <h1>ay-list demo</h1>
-    <ml-test id="list" foo="bar" value="metl">This is the innerHTML</ml-test>
+    <h1>METL Demp</h1>
+    <ml-test id="list" foo="bar" value="metl">This is the innerHTML<span>with a span</span></ml-test>
     <button id="bd">destroy</button>
     <script>
         var node = dom.query('ml-test');

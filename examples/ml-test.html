@@ -1,6 +1,7 @@
 <template id="ml-test-template">
     <button ref="button" on="click:onButtonClick">My Button</button>
-    <div>LIST!</div>
+    <div>Example!</div>
+    <div class="content"><label>Original HTML:</label><span ref="contentNode"></span></div>
 </template>
 <script>
     ml.create({
@@ -31,6 +32,23 @@
             this.once(window, 'resize', function () {
                 console.log('resize - ONCE');
             });
+            this.setLightDom();
+        },
+        setLightDom: function () {
+            var
+                content = [],
+                nodes = this.getLightNodes();
+            nodes.forEach(function (node) {
+                console.log('node.nodeType:', node.nodeType);
+                if(node.nodeType === 1){
+                    this.contentNode.appendChild(node);
+                }else{
+                    this.contentNode.appendChild(node);
+                }
+                //content.push(node);
+            }, this);
+            //this.contentNode.innerHTML = this.getLightNodes();
+
         },
         addChild: function () {
             dom('div', {html:'append.child'}, this);
