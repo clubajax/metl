@@ -13,16 +13,30 @@
 <body>
     <h1>ay-list demo</h1>
     <ml-test id="list">This is the innerHTML</ml-test>
-
+    <button id="bd">destroy</button>
     <script>
         var node = dom.query('ml-test');
-        //console.log('node', node);
+
+        node.on('attached', function (e) {
+            console.log('demo.attached', e);
+        });
+        node.on('domready', function (e) {
+            console.log('demo.domready', e);
+        });
+        node.on('detached', function (e) {
+            console.log('demo.detached', e);
+        });
+
         setTimeout(function () {
             node.parentNode.removeChild(node);
             setTimeout(function () {
                 document.body.appendChild(node);
             }, 300);
         }, 300);
+
+        on('bd', 'click', function () {
+            node.destroy();
+        });
     </script>
 </body>
 </html>

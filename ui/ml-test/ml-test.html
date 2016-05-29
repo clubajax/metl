@@ -12,11 +12,19 @@
         attached: function () {
             console.log('attached', this._uid, this.DOMSTATE);
 
+
         },
         domReady: function () {
             console.log('domReady', this._uid, this.DOMSTATE);
             console.log('button:', this.button);
             console.log('lightNodes', this.getLightNodes());
+            dom('div', {html:'append.child'}, this);
+            this.on(window, 'resize', function () {
+                console.log('resize');
+            });
+            this.once(window, 'resize', function () {
+                console.log('resize - ONCE');
+            });
         },
         onButtonClick: function (e) {
             console.log('CLICK!', e);
