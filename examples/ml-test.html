@@ -35,20 +35,10 @@
             this.setLightDom();
         },
         setLightDom: function () {
-            var
-                content = [],
-                nodes = this.getLightNodes();
+            var nodes = this.getLightNodes();
             nodes.forEach(function (node) {
-                console.log('node.nodeType:', node.nodeType);
-                if(node.nodeType === 1){
-                    this.contentNode.appendChild(node);
-                }else{
-                    this.contentNode.appendChild(node);
-                }
-                //content.push(node);
+                this.contentNode.appendChild(node);
             }, this);
-            //this.contentNode.innerHTML = this.getLightNodes();
-
         },
         addChild: function () {
             dom('div', {html:'append.child'}, this);

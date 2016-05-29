@@ -43,14 +43,16 @@
             node.setAttribute('value', 'foo');
         }
 
+        function createNode(){
+            dom('ml-test', {}, document.body);
+        }
         function testAddPlugin () {
             ml.create.plugins.push({
                 preAttach: function (node) {
                     console.log('post.create.pre.attach');
                 }
             });
-
-            dom('ml-test', {}, document.body);
+            createNode();
         }
 
         function testDetach () {
@@ -62,8 +64,9 @@
                 }, 300);
             }, 300);
         }
-        //testDetach();
-        testAttrs();
+        testDetach();
+        //testAttrs();
+        //createNode();
 
         on('bd', 'click', function () {
             node.destroy();
