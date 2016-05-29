@@ -27,12 +27,27 @@
             console.log('demo.detached', e);
         });
 
-        setTimeout(function () {
-            node.parentNode.removeChild(node);
+
+        function testAddPlugin () {
+            ml.create.plugins.push({
+                preAttach: function (node) {
+                    console.log('post.create.pre.attach');
+                }
+            });
+
+            dom('ml-test', {}, document.body);
+        }
+
+        function testDetach () {
             setTimeout(function () {
-                document.body.appendChild(node);
+                node.parentNode.removeChild(node);
+                setTimeout(function () {
+                    document.body.appendChild(node);
+                    testAddPlugin();
+                }, 300);
             }, 300);
-        }, 300);
+        }
+        testDetach();
 
         on('bd', 'click', function () {
             node.destroy();
