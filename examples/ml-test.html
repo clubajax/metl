@@ -17,7 +17,6 @@
         domReady: function () {
             console.log('domReady', this._uid, this.DOMSTATE);
             console.log('button:', this.button);
-            console.log('lightNodes', this.getLightNodes());
             dom('div', {html:'append.child'}, this);
             this.on(window, 'resize', function () {
                 console.log('resize');
