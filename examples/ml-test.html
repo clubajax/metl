@@ -1,28 +1,69 @@
+<!-- The HTML template that will be used to create this component -->
 <template id="ml-test-template">
+    <!--
+        ref: The value of `ref` (this.button) will be used as the property name of this
+        node.
+        on: Wires up events to this node using the value as a key-value pair: the event
+        name and the component method to be called
+    -->
     <button ref="button" on="click:onButtonClick">My Button</button>
     <div>Example!</div>
-    <div class="content"><label>Original HTML:</label><span ref="contentNode"></span></div>
+    <div class="content">
+        <label>Original HTML:</label>
+        <!-- The setLightDom method below shows an example of how you might manage the
+         original HTML -->
+        <span ref="contentNode"></span>
+    </div>
 </template>
 <script>
     ml.create({
+        // This will be the node name
         tag: 'ml-test',
+        // How to tie the template to this component
         templateId: 'ml-test-template',
+        // attrs are a way of wiring node attributes to a component property.
+        // value is wired to a getter setter, and foo is wired to a standard
+        // property
         attrs:['value', 'foo'],
+
+        // The created lifecycle method fires when the node is created, but not
+        // necessarily appended to the DOM. Attributes may be ready to access if
+        // node was created in markup.
+        // created fires only once.
         created: function () {
             console.log('created', this.foo, this.value);
         },
-        value: {
-            get: function () {
-                return this.$value;
-            },
-            set: function (value) {
-                console.log('SET VALUE:::', value);
-                this.$value = value;
-            }
-        },
+
+        // The attached lifecycle method fires when the node is appended to the
+        // DOM.
+        // attached may fire multiple times if a node is removed and added back
+        // to the DOM, which may be common in frameworks.
+        // Since it fires multiple times, attached is not good for setup, but
+        // could be used in conjunction with detached for adding and removing
+        // event listeners
         attached: function () {
             //console.log('attached', this._uid, this.DOMSTATE);
         },
+        // The detached lifecycle method fires when the node is removed from the
+        // DOM.
+        // This can fire multiple times, as it fires when a node is removed, not
+        // necessarily when it is destroyed.
+        detached: function () {
+            //console.log('detached', this._uid, this.DOMSTATE);
+        },
+
+        // The attributeChanged lifecycle method fires when an attribute (not a
+        // property) has changed. It shouldn't be necessary, as the attr Array
+        // uses this under the hood.
+        attributeChanged: function (prop, value) {
+            console.log('att change', prop, value, this.DOMSTATE);
+        },
+
+        // The domReady lifecycle method fires when the node is appended to the
+        // DOM and all of its children are appended and ready.
+        // This fires once and is used for setup.
+        // Note that there is a small timeout between attached and domReady, so
+        // syncronous actions should not be expected.
         domReady: function () {
             //console.log('domReady', this._uid, this.DOMSTATE);
             //console.log('button:', this.button);
@@ -34,6 +75,22 @@
             });
             this.setLightDom();
         },
+
+        // An example of a getter/setter, which is wired to the value attribute
+        // via the attr property.
+        value: {
+            get: function () {
+                return this.$value;
+            },
+            set: function (value) {
+                this.$value = value;
+            }
+        },
+
+        // setLightDom is used to show an example of the getLightNodes method,
+        // which returns an array of the original DOM nodes that were removed
+        // in favor of the template. If no template is used, getLightNodes will
+        // return an empty array.
         setLightDom: function () {
             var nodes = this.getLightNodes();
             nodes.forEach(function (node) {
@@ -45,12 +102,6 @@
         },
         onButtonClick: function (e) {
             console.log('CLICK!', e);
-        },
-        detached: function () {
-            //console.log('detached', this._uid, this.DOMSTATE);
-        },
-        attributeChanged: function (prop, value) {
-            console.log('att change', prop, value, this.DOMSTATE);
         }
     });
 </script>
