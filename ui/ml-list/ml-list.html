@@ -1,0 +1,208 @@
+<script>
+    (function () {
+
+        'use strict';
+
+        ml.create({
+            tag: 'ml-list',
+            attrs:['horizontal', 'value'],
+
+            created: function () {
+                if(this.horizontal !== null){
+                    this.classList.add('horizontal');
+                    this.horizontal = true;
+                }
+                this._disabled = false;
+                dom.attr(this, 'tabindex', 0);
+            },
+
+            domReady: function () {
+                this.connectEvents();
+                this.domReady = function () {};
+            },
+
+            connectEvents: function () {
+                if(this.children.length && !this.isOwned) {
+                    this.registerHandle(ml.keys.bind(this));
+                    this.on('key-highlight', this.onHighlight.bind(this));
+                    this.on('key-select', this.onSelect.bind(this));
+                    this.connectEvents = function () {}
+                }
+                addRoles(this);
+            },
+
+            value: {
+                get: function () {
+                    return getIdentifier(this.getSelected());
+                },
+                set: function (value) {
+                    this.setSelected(this.getElement(value));
+                }
+            },
+
+            disabled: {
+                get: function () {
+                    return this.getDisabled();
+                },
+                set: function (value) {
+                    this.setDisabled(value);
+                }
+            },
+
+            getElement: function (identifier) {
+                var i, node;
+                for(i = 0; i < this.children.length; i++){
+                    node = this.children[i];
+                    if(isEqual(node.value, identifier) || isEqual(node.id, identifier)){
+                        return node;
+                    }
+                }
+                return null;
+            },
+
+            reset: function () {
+                this.setSelected(null);
+            },
+
+            clear: function () {
+                this.reset();
+                dom.clean(this);
+            },
+
+            getDisabled: function () {
+                return this._disabled;
+            },
+
+            setDisabled: function (value) {
+                this._disabled = value;
+            },
+
+            getSelected: function () {
+                var i, node;
+                for(i = 0; i < this.children.length; i++){
+                    node = this.children[i];
+                    if(node.classList.contains('ml-selected')){
+                        return node;
+                    }
+                }
+                return null;
+            },
+
+            setSelected: function (node, checkOwnership) {
+                if(checkOwnership && !this.contains(node)){
+                    node = null;
+                }
+                this.onSelect({detail:{value:node}});
+                return !!node;
+            },
+
+            setHighight: function (node) {
+                this.onHighlight({detail:{value:node}});
+            },
+
+            onSelect: function (event) {
+                if(this.selected){
+                    this.selected.classList.remove('ml-selected');
+                }
+                this.selected = event.detail.value;
+                if(this.selected) {
+                    this.selected.classList.add('ml-selected');
+                    this.emit('change', {value: getValue(this.selected)});
+                }
+            },
+
+            onHighlight: function (event) {
+                if(this.highlighted){
+                    this.highlighted.classList.remove('ml-highlighted');
+                }
+                this.highlighted = event.detail.value;
+                // may be null, if moused out
+                if(this.highlighted) {
+                    this.highlighted.classList.add('ml-highlighted');
+                }
+            },
+
+            add: function (objectOrArray) {
+                this.childTagName = this.childTagName || (this.children[0] ? this.children[0].localName : 'div');
+                var
+                    i,
+                    node,
+                    items = objectOrArray;
+                if(!Array.isArray(items)){
+                    items = [items];
+                }
+                for(i = 0; i < items.length; i++){
+                    if(!dom.isNode(items[i])){
+                        node = dom(this.childTagName, {
+                            html: items[i].name || items[i].label
+                        });
+                        if(items[i].selected){
+                            node.className = 'ml-selected';
+                            if(this.selected){
+                                console.warn('set selected not yet supported');
+                                //this.keyHandle.setSelected(node);
+                            }else{
+                                this.selected = node;
+                            }
+                        }
+                        if(items[i].id){
+                            node.id = items[i].id;
+                        }
+                        if(items[i].value){
+                            node.value = items[i].value;
+                        }
+                    }else{
+                        node = items[i];
+                    }
+                    node.setAttribute('role', 'listitem');
+                    this.appendChild(node);
+                }
+            }
+        });
+
+        function isEqual(v1, v2){
+            return v1 === v2 || v1+'' === v2+'' || +v1 === +v2;
+        }
+
+        function getValue(node){
+            if(node.value !== undefined){
+                return node.value;
+            }
+            if(node.hasAttribute('value')){
+                return node.getAttribute('value');
+            }
+            if(node.id){
+                return node.id;
+            }
+            if(node.label){
+                return node.label;
+            }
+            if(node.hasAttribute('label')){
+                return node.getAttribute('label');
+            }
+            return node.textContent;
+        }
+
+        function getIdentifier(node){
+            return !!node ? node.value || node.id || node : null;
+        }
+
+        function addRoles(node){
+            for(var i = 0; i < node.children.length; i++){
+                node.children[i].setAttribute('role', 'listitem');
+            }
+            node.setAttribute('role', 'listbox');
+        }
+
+        function isOwned(node, tagName){
+            while(node && node.localName !== 'body'){
+                if(node.localName === tagName){
+                    return true;
+                }
+                node = node.parentNode;
+            }
+            return false;
+        }
+
+    }());
+</script>

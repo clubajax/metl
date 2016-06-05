@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <title>ml-list Demo</title>
+    <link rel="import" href="../../lib/main.html">
+    <link rel="import" href="./ml-list.html">
+    <style>
+        body{
+            padding: 20px;
+        }
+        ml-list{
+            display: block;
+            border: 1px solid #ccc;
+        }
+        ml-list li{
+            list-style: none;
+            padding: 3px;
+        }
+        ml-list .ml-highlighted{
+            background: #eee;
+        }
+        ml-list .ml-selected{
+            background: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>ml-list Demo</h1>
+
+    <ml-list>
+        <li>Apples</li>
+        <li>Oranges</li>
+        <li>Bananas</li>
+        <li>Grapes</li>
+        <li>Pears</li>
+    </ml-list>
+
+    <script>
+        var node = dom.query('ml-list');
+
+    </script>
+</body>
+</html>
