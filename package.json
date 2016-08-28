@@ -22,7 +22,8 @@
   "homepage": "https://github.com/clubajax/metl#readme",
   "devDependencies": {
     "grunt": "^1.0.1",
-    "grunt-http-server": "^2.0.0"
+    "grunt-http-server": "^2.0.0",
+    "grunt-metl-tools": "github:clubajax/grunt-metl-tools"
   },
   "dependencies": {
     "grunt-concurrent": "^2.3.0",
