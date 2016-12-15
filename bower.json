@@ -12,8 +12,8 @@
   ],
   "homepage": "https://github.com/clubajax/metl",
   "dependencies": {
-    "on": "clubajax/on#v1.5.5",
-    "dom": "clubajax/dom#v1.1.2",
+    "on": "clubajax/on#v1.7.0",
+    "dom": "clubajax/dom#v1.3.3",
     "store": "clubajax/store#v0.8.1",
     "heya-state": "heya/state",
     "heya-async": "heya/async",
