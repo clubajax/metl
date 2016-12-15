@@ -12,9 +12,12 @@
   ],
   "homepage": "https://github.com/clubajax/metl",
   "dependencies": {
-    "on": "clubajax/on",
-    "dom": "clubajax/dom",
-    "store": "clubajax/store",
-    "heya-defer": "heya/defer#^1.1.0"
+    "on": "clubajax/on#v1.5.5",
+    "dom": "clubajax/dom#v1.1.2",
+    "store": "clubajax/store#v0.8.1",
+    "heya-state": "heya/state",
+    "heya-async": "heya/async",
+    "heya-defer": "heya/defer#^1.1.0",
+    "heya-io": "heya/io#^1.0.8"
   }
 }
