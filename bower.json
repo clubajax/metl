@@ -18,6 +18,7 @@
     "heya-state": "heya/state",
     "heya-async": "heya/async",
     "heya-defer": "heya/defer#^1.1.0",
-    "heya-io": "heya/io#^1.0.8"
+    "heya-io": "heya/io#^1.0.8",
+    "webcomponents": "webcomponents/custom-elements#1.0.0-alpha.3"
   }
 }
