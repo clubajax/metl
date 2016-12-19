@@ -3,8 +3,7 @@ const keys = require('key-nav');
 const store = require('store');
 const dom = require('dom');
 const ITEM_CLASS = 'ml-list';
-
-console.log('BaseComponent', BaseComponent);
+const onDomReady = window.onDomReady;
 
 class MlList extends BaseComponent {
 
@@ -25,6 +24,11 @@ class MlList extends BaseComponent {
 
     domReady() {
         dom.attr(this, 'tabindex', 0);
+        console.log('children', this.children);
+        if(this.children.length){
+            this.store.add(formatItems([...this.children]));
+            this.render();
+        }
     }
 
     attributeChanged(name, value) {
@@ -35,25 +39,27 @@ class MlList extends BaseComponent {
     }
 
     render () {
-        let
-            frag = document.createDocumentFragment(),
-            items = this.store.fetch();
+        onDomReady(this, () => {
+            let
+                frag = document.createDocumentFragment(),
+                items = this.store.fetch();
 
-        this.innerHTML = '';
-        items.forEach(function (item) {
-            frag.appendChild(item.node);
+            this.innerHTML = '';
+            items.forEach(function (item) {
+                frag.appendChild(item.node);
+            });
+            this.appendChild(frag);
+            this.connectEvents();
         });
-        this.appendChild(frag);
     }
 
     set data (itemOrItems) {
         this.store.add(formatItems(itemOrItems));
         this.render();
-        this.connectEvents();
     }
 
     onHighlight (e) {
-        console.log('hi', e);
+        console.log('hi!', e);
     }
 
     onSelect (e) {
@@ -62,7 +68,8 @@ class MlList extends BaseComponent {
 
     connectEvents() {
         if (this.children.length) { // && !isOwned(this tagname??)
-            this.registerHandle(keys(this), {roles:true});
+            let controller = keys(this, {roles:true});
+            this.registerHandle(on.makeMultiHandle(controller.handles));
             this.on('key-highlight', this.onHighlight.bind(this));
             this.on('key-select', this.onSelect.bind(this));
             this.connectEvents = function () {}
@@ -76,7 +83,7 @@ function formatItems(itemOrItems) {
         if(dom.isNode(item)){
             // is node - create data
             // TODO: ensure LIs
-            node.classList.add(ITEM_CLASS);
+            item.classList.add(ITEM_CLASS);
             return {
                 id: item.id,
                 value: item.value,

@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Test BaseComponent</title>
+
+    <link rel="stylesheet" href="../bower_components/mocha/mocha.css">
+    <script src="../bower_components/mocha/mocha.js"></script>
+    <script src="../bower_components/chai/chai.js"></script>
+    <script src="../bower_components/on/dist/on.js"></script>
+    <script src="../bower_components/dom/src/dom.js"></script>
+
+    <link rel="stylesheet" href="../dist/main.css" />
+    <script src="//localhost:35731/livereload.js"></script>
+
+
+    <script src="../bower_components/BaseComponent/src/loader.js" files="../dist/build.js"></script>
+
+    <style>
+        body{
+            padding: 20px;
+            font-family: sans-serif;
+        }
+        section{
+            border: 1px solid #ccc;
+            padding: 3px;
+            margin: 5px;
+        }
+        section section{
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test MlList</h1>
+
+
+    <div id="mocha"></div>
+
+    <script>
+
+        // for collecting inheritance properties
+        var props = {
+            created:[],
+            attached:[],
+            base: [],
+            domReady: [],
+            restore: function () {
+                this.created.length = 0;
+                this.attached.length = 0;
+                this.base.length = 0;
+                this.domReady.length = 0;
+            }
+        };
+    </script>
+
+    <script>
+        document.addEventListener('onComponentsReady', function () {
+            mocha.setup('tdd');
+
+            suite('List', function () {
+                this.timeout(3000);
+                var suite = window.suite,
+                    test = window.test,
+                    dom = window.dom,
+                    on = window.on,
+                    expect = chai.expect,
+                    body = document.body;
+                function data () {
+                    return data = [{id:1, label:'alpha'}, {id:2, label: 'beta'}, {id:3, label: 'gamma'}, {id:4, label:'delta'}, {id:5, label: 'epsilon'}];
+                }
+
+                function xsuite() {
+                }
+
+                function xtest() {
+                }
+
+                suite('create', function () {
+
+                    test('it should create a list by setting `data`', function (done) {
+                        var node = dom('ml-list', {}, body);
+                        node.data = data();
+                        onDomReady(node, function () {
+                            var nodes = dom.queryAll(node, 'li');
+                            expect(nodes.length).to.equal(5);
+                            expect(nodes[0].getAttribute('selected')).to.equal('true');
+                            node.destroy();
+                            done();
+                        });
+                    });
+
+                    test('it should create a list by innerHTML', function (done) {
+
+                        var str = '<ml-list tabindex="0"><li class="ml-list" id="1">alpha</li><li id="2">beta</li><li id="3">gamma</li><li id="4">delta</li><li id="5">epsilon</li></ml-list>'
+                        var div = dom('div', {html:str}, body);
+                        var node = dom.query('ml-list');
+                        onDomReady(node, function () {
+                            var nodes = dom.queryAll(node, 'li');
+                            expect(nodes.length).to.equal(5);
+                            expect(nodes[0].getAttribute('selected')).to.equal('true');
+                            node.destroy();
+                            done();
+                        });
+                    });
+
+                });
+
+            });
+
+            mocha.run();
+        });
+
+    </script>
+</body>
+</html>

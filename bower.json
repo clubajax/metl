@@ -12,7 +12,7 @@
   ],
   "homepage": "https://github.com/clubajax/metl",
   "dependencies": {
-    "on": "clubajax/on#v1.7.0",
+    "on": "clubajax/on#v1.7.5",
     "dom": "clubajax/dom#v1.3.3",
     "store": "clubajax/store#v0.8.1",
     "heya-state": "heya/state",
@@ -20,5 +20,10 @@
     "heya-defer": "heya/defer#^1.1.0",
     "heya-io": "heya/io#^1.0.8",
     "webcomponents": "webcomponents/custom-elements#1.0.0-alpha.3"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0",
+    "chai": "^3.5.0",
+    "BaseComponent": "clubajax/BaseComponent"
   }
 }
