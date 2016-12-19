@@ -2,9 +2,9 @@ import BaseComponent from 'BaseComponent';
 const keys = require('key-nav');
 const store = require('store');
 const dom = require('dom');
+const ITEM_CLASS = 'ml-list';
 
-console.log('keys', keys);
-console.log('STORE', store);
+console.log('BaseComponent', BaseComponent);
 
 class MlList extends BaseComponent {
 
@@ -17,7 +17,7 @@ class MlList extends BaseComponent {
     }
 
     constructor(...args) {
-        super();
+        super(args);
         this.store = store({
             plugins: 'filter,sort,paginate'
         });
@@ -35,12 +35,19 @@ class MlList extends BaseComponent {
     }
 
     render () {
-        let items = this.store.fetch();
-        console.log('ITEMS', items);
+        let
+            frag = document.createDocumentFragment(),
+            items = this.store.fetch();
+
+        this.innerHTML = '';
+        items.forEach(function (item) {
+            frag.appendChild(item.node);
+        });
+        this.appendChild(frag);
     }
 
     set data (itemOrItems) {
-        this.store.add(itemOrItems);
+        this.store.add(formatItems(itemOrItems));
         this.render();
     }
 
@@ -55,6 +62,25 @@ class MlList extends BaseComponent {
     }
 }
 customElements.define('ml-list', MlList);
+
+function formatItems(itemOrItems) {
+    return (Array.isArray(itemOrItems) ? itemOrItems : [itemOrItems]).map(function (item) {
+        if(dom.isNode(item)){
+            // is node - create data
+            node.classList.add(ITEM_CLASS);
+            return {
+                id: item.id,
+                value: item.value,
+                selected: item.selected,
+                node: item
+            }
+        }else{
+            // is object - create node
+            item.node = dom('div', {html: item.label, id: item.id, className: ITEM_CLASS, attr:{value: item.value, selected: item.selected}});
+            return item;
+        }
+    });
+}
 
 function isEqual(v1, v2) {
     return v1 === v2 || v1 + '' === v2 + '' || +v1 === +v2;

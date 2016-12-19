@@ -12,7 +12,7 @@ module.exports = function (grunt) {
             },
             watch:{
                 less:['./less/*.less'],
-                scripts:['./lib/**/*.js', './ui/**/*.html'],
+                //scripts:['./lib/**/*.js', './ui/**/*.html'],
                 port: 35731
             }
         }

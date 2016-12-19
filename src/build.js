@@ -1,6 +1,8 @@
 import MlList from './ml-list';
 import BaseComponent from 'BaseComponent';
 const dom = require('dom');
+//require("../less/main.less");
+//import css from "../less/main.less";
 
 let list = dom('ml-list', {html:'i am ml-list'}, document.body);
 list.on('domready', function () {
