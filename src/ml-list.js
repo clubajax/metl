@@ -49,16 +49,24 @@ class MlList extends BaseComponent {
     set data (itemOrItems) {
         this.store.add(formatItems(itemOrItems));
         this.render();
+        this.connectEvents();
+    }
+
+    onHighlight (e) {
+        console.log('hi', e);
+    }
+
+    onSelect (e) {
+        console.log('sel', e);
     }
 
     connectEvents() {
         if (this.children.length) { // && !isOwned(this tagname??)
-            this.registerHandle(keys.bind(this));
+            this.registerHandle(keys(this), {roles:true});
             this.on('key-highlight', this.onHighlight.bind(this));
             this.on('key-select', this.onSelect.bind(this));
             this.connectEvents = function () {}
         }
-        addRoles(this);
     }
 }
 customElements.define('ml-list', MlList);
@@ -67,6 +75,7 @@ function formatItems(itemOrItems) {
     return (Array.isArray(itemOrItems) ? itemOrItems : [itemOrItems]).map(function (item) {
         if(dom.isNode(item)){
             // is node - create data
+            // TODO: ensure LIs
             node.classList.add(ITEM_CLASS);
             return {
                 id: item.id,
@@ -76,7 +85,7 @@ function formatItems(itemOrItems) {
             }
         }else{
             // is object - create node
-            item.node = dom('div', {html: item.label, id: item.id, className: ITEM_CLASS, attr:{value: item.value, selected: item.selected}});
+            item.node = dom('li', {html: item.label, id: item.id, className: ITEM_CLASS, attr:{value: item.value, selected: item.selected}});
             return item;
         }
     });
@@ -107,13 +116,6 @@ function getValue(node) {
 
 function getIdentifier(node) {
     return !!node ? node.value || node.id || node : null;
-}
-
-function addRoles(node) {
-    for (var i = 0; i < node.children.length; i++) {
-        node.children[i].setAttribute('role', 'listitem');
-    }
-    node.setAttribute('role', 'listbox');
 }
 
 function isOwned(node, tagName) {
