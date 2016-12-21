@@ -6,13 +6,12 @@ const ITEM_CLASS = 'ml-list';
 const onDomReady = window.onDomReady;
 
 // TODO
-// List instead of MlList
+
 // m-list instead of ml-list (css var for prefix?)
 // bools/booleans (like disabled) to work with props
 // nav-keys an option?
 // nav-keys would be different with cells
 // virtual scrolling
-//      virtual would not like pre-rendering child nodes
 // list needs to act table-like, with multiple display-values
 //      can that be extended into tds
 // template for a row
@@ -47,9 +46,9 @@ class List extends BaseComponent {
 
     attributeChanged(name, value) {
         this[name] = value;
-        if (name === 'horizontal') {
-            dom.classList.toggle('horizontal', value);
-        }
+        //if (name === 'horizontal') {
+        //    dom.classList.toggle('horizontal', value);
+        //}
     }
 
     render () {
@@ -99,9 +98,10 @@ class List extends BaseComponent {
 
     onSelect (e) {
         console.log('sel', e);
-        var s = this.store.selection;
-        console.log('selected', s);
-        this.emit('change', s);
+        let selNode = e.detail.value;
+        this.store.selection = selNode.id;
+        console.log('this.store.selection', selNode.id, this.store.selection);
+        this.emit('change', {value: this.store.selection});
     }
 
     connectEvents() {

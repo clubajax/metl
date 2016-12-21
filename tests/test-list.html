@@ -151,7 +151,23 @@
                             var nodes = dom.queryAll(node, 'li');
 
                             node.on('change', function (e) {
-                                console.log('E', e);
+                                expect(e.value.id).to.equal(3);
+                            });
+                            on.emit(nodes[2], 'click');
+                            node.destroy();
+                            done();
+                        });
+                    });
+
+                    // TODO: key-nav to handle shift/command-click
+                    xtest('it should emit a `change` event, multiple', function (done) {
+                        var node = dom('ml-list', {}, body);
+                        node.data = data();
+                        onDomReady(node, function () {
+                            var nodes = dom.queryAll(node, 'li');
+
+                            node.on('change', function (e) {
+                                expect(e.value.id).to.equal(3);
                             });
                             on.emit(nodes[2], 'click');
                             node.destroy();
