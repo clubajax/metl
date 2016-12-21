@@ -46,11 +46,24 @@ module.exports = {
                     options: {presets: ["es2015"]}
                 }]
             }
-            //,{
-            //    test: /\.less$/,
-            //    exclude: /node_modules|bower_components/,
-            //    use: ['style-loader', 'less-loader']
-            //}
+            ,{
+                // does this work?
+                // https://webpack.js.org/guides/migrating/
+                test: /\.less$/,
+                use: [{
+                    loader: "style-loader"
+                },{
+                    loader: "css-loader",
+                    options: {
+                        modules: true
+                    }
+                },{
+                    loader: "css-loader",
+                    options: {
+                        modules: true
+                    }
+                }]
+            }
             //, {
             //    test: /\.(less|css)$/,
             //    exclude: /node_modules|bower_components|dist/,

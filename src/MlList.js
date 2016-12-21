@@ -5,6 +5,22 @@ const dom = require('dom');
 const ITEM_CLASS = 'ml-list';
 const onDomReady = window.onDomReady;
 
+// TODO
+// List instead of MlList
+// m-list instead of ml-list (css var for prefix?)
+// bools/booleans (like disabled) to work with props
+// nav-keys an option?
+// nav-keys would be different with cells
+// virtual scrolling
+//      virtual would not like pre-rendering child nodes
+// list needs to act table-like, with multiple display-values
+//      can that be extended into tds
+// template for a row
+// different row templates?
+//  template props
+//  each
+//  if
+
 class MlList extends BaseComponent {
 
     static get observedAttributes() {
@@ -18,7 +34,7 @@ class MlList extends BaseComponent {
     constructor(...args) {
         super(args);
         this.store = store({
-            plugins: 'filter,sort,paginate'
+            plugins: 'filter,sort,paginate,selection'
         });
     }
 
@@ -26,8 +42,7 @@ class MlList extends BaseComponent {
         dom.attr(this, 'tabindex', 0);
         console.log('children', this.children);
         if(this.children.length){
-            this.store.add(formatItems([...this.children]));
-            this.render();
+            this.add(formatItems([...this.children]));
         }
     }
 
@@ -42,28 +57,52 @@ class MlList extends BaseComponent {
         onDomReady(this, () => {
             let
                 frag = document.createDocumentFragment(),
-                items = this.store.fetch();
+                items = this.store.query(),
+                selected = this.store.selection,
+                selNode;
 
+            console.log('items', items);
             this.innerHTML = '';
             items.forEach(function (item) {
-                frag.appendChild(item.node);
+                frag.appendChild(toNode(item));
             });
+
+            if(selected) {
+                selNode = frag.querySelector(('#' + selected.id));
+                selNode.setAttribute('selected', '');
+            }else{
+                selNode = frag.children[0];
+                selNode.setAttribute('selected', '');
+                this.store.selection = selNode.id;
+            }
             this.appendChild(frag);
             this.connectEvents();
         });
     }
 
-    set data (itemOrItems) {
+    add (itemOrItems) {
         this.store.add(formatItems(itemOrItems));
         this.render();
     }
 
+    set data (itemOrItems) {
+        this.clear();
+        this.add(itemOrItems);
+    }
+
+    clear () {
+
+    }
+
     onHighlight (e) {
-        console.log('hi!', e);
+        //console.log('hi!', e);
     }
 
     onSelect (e) {
         console.log('sel', e);
+        var s = this.store.selection;
+        console.log('selected', s);
+        this.emit('change', s);
     }
 
     connectEvents() {
@@ -78,21 +117,32 @@ class MlList extends BaseComponent {
 }
 customElements.define('ml-list', MlList);
 
+
+function toNode (item) {
+    let attr = {
+        value: item.value
+    };
+    if(item.selected){
+        attr.selected = true;
+    }
+    return dom('li', {html: item.label, id: item.id, className: ITEM_CLASS, attr:attr});
+}
+
 function formatItems(itemOrItems) {
     return (Array.isArray(itemOrItems) ? itemOrItems : [itemOrItems]).map(function (item) {
         if(dom.isNode(item)){
             // is node - create data
-            // TODO: ensure LIs
-            item.classList.add(ITEM_CLASS);
+            //item.classList.add(ITEM_CLASS);
             return {
                 id: item.id,
                 value: item.value,
                 selected: item.selected,
-                node: item
+                //node: item,
+                label: item.innerHTML
             }
         }else{
             // is object - create node
-            item.node = dom('li', {html: item.label, id: item.id, className: ITEM_CLASS, attr:{value: item.value, selected: item.selected}});
+            //item.node = dom('li', {html: item.label, id: item.id, className: ITEM_CLASS, attr:{value: item.value, selected: item.selected}});
             return item;
         }
     });

@@ -17,16 +17,16 @@
     "JavaScript",
     "UI"
   ],
-  "author": "mike@mikewilcox.net",
+  "author": "anm9tr@gmail.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/clubajax/metl/issues"
   },
   "homepage": "https://github.com/clubajax/metl#readme",
   "dependencies": {
-    "BaseComponent": "github:clubajax/BaseComponent",
-    "on": "clubajax/on#master",
-    "dom": "clubajax/dom#v1.3.3",
+    "BaseComponent": "clubajax/BaseComponent#master",
+    "on": "clubajax/on",
+    "dom": "clubajax/dom",
     "store": "clubajax/store",
     "key-nav": "clubajax/key-nav"
   },
