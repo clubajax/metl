@@ -1,4 +1,4 @@
 import BaseComponent from 'BaseComponent';
-import MlList from './MlList';
+import MlList from './List';
 customElements.define('base-component', BaseComponent);
 

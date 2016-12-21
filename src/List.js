@@ -21,7 +21,7 @@ const onDomReady = window.onDomReady;
 //  each
 //  if
 
-class MlList extends BaseComponent {
+class List extends BaseComponent {
 
     static get observedAttributes() {
         return ['horizontal', 'value', 'disabled'];
@@ -40,7 +40,6 @@ class MlList extends BaseComponent {
 
     domReady() {
         dom.attr(this, 'tabindex', 0);
-        console.log('children', this.children);
         if(this.children.length){
             this.add(formatItems([...this.children]));
         }
@@ -61,7 +60,7 @@ class MlList extends BaseComponent {
                 selected = this.store.selection,
                 selNode;
 
-            console.log('items', items);
+            //console.log('items', items);
             this.innerHTML = '';
             items.forEach(function (item) {
                 frag.appendChild(toNode(item));
@@ -115,7 +114,7 @@ class MlList extends BaseComponent {
         }
     }
 }
-customElements.define('ml-list', MlList);
+customElements.define('ml-list', List);
 
 
 function toNode (item) {
@@ -185,4 +184,4 @@ function isOwned(node, tagName) {
     return false;
 }
 
-export default MlList;
+export default List;
