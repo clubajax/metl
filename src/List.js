@@ -9,8 +9,6 @@ const onDomReady = window.onDomReady;
 // TODO
 
 // nav-keys would be different with cells
-// multi-select
-//      - will need to be store-driven, due to virtual scrolling
 // virtual scrolling
 // list needs to act table-like, with multiple display-values
 //      can that be extended into tds
@@ -26,11 +24,11 @@ const onDomReady = window.onDomReady;
 class List extends BaseComponent {
 
     static get observedAttributes() {
-        return ['horizontal', 'value', 'disabled', 'keys', 'multiple'];
+        return ['horizontal', 'value', 'disabled', 'keys', 'multiple', 'virtual', 'selectable'];
     }
 
     get props() {
-        return ['horizontal', 'value', 'keys', 'disabled', 'multiple'];
+        return ['horizontal', 'value', 'keys', 'disabled', 'multiple', 'virtual', 'selectable'];
     }
 
     constructor(...args) {
@@ -61,23 +59,27 @@ class List extends BaseComponent {
             frag.appendChild(toNode(item));
         });
 
-        if(selected) {
-            if(this.multiple){
-                //console.log('mult sel', selected.map(function(m){return m.id;}).join(',') );
-                selected.forEach(function (item) {
-                    selNode = frag.querySelector(('#' + item.id));
+        if(this.selectable) {
+            if (selected) {
+                if (this.multiple) {
+                    //console.log('mult sel', selected.map(function(m){return m.id;}).join(',') );
+                    selected.forEach(function (item) {
+                        selNode = frag.querySelector(('#' + item.id));
+                        selNode.setAttribute('selected', '');
+                    });
+                }
+                else {
+                    selNode = frag.querySelector(('#' + selected.id));
                     selNode.setAttribute('selected', '');
-                });
-            }else{
-                selNode = frag.querySelector(('#' + selected.id));
-                selNode.setAttribute('selected', '');
-            }
+                }
 
-        }else{
-            // default to first - needs to be optional
-            selNode = frag.children[0];
-            selNode.setAttribute('selected', '');
-            this.store.selection = selNode.id;
+            }
+            else {
+                // default to first - needs to be optional
+                selNode = frag.children[0];
+                selNode.setAttribute('selected', '');
+                this.store.selection = selNode.id;
+            }
         }
         this.appendChild(frag);
         this.connectEvents();
@@ -109,7 +111,7 @@ class List extends BaseComponent {
     }
 
     connectEvents() {
-        if (this.children.length) { // && !isOwned(this tagname??)
+        if (this.children.length && this.selectable) { // && !isOwned(this tagname??)
             if(this.keys) {
                 ml.keys(this, {multiple: this.multiple});
                 this.on('change', this.render.bind(this));

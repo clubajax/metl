@@ -68,7 +68,23 @@
                     expect = chai.expect,
                     body = document.body;
                 function data () {
-                    return [{id:'a', label:'alpha'}, {id:'b', label: 'beta'}, {id:'c', label: 'gamma'}, {id:'d', label:'delta'}, {id:'e', label: 'epsilon'}];
+                    return [
+                        {id:'a', label:'alpha'},
+                        {id:'b', label: 'beta'},
+                        {id:'c', label: 'gamma'},
+                        {id:'d', label:'delta'},
+                        {id:'e', label: 'epsilon'}
+                    ];
+                }
+
+                function data2 () {
+                    return [
+                        {id:'a', label:'alpha', type: 'greek', amount: 1},
+                        {id:'b', label: 'beta', type: 'greek', amount: 0},
+                        {id:'c', label: 'gamma', type: 'latin', amount: 5},
+                        {id:'d', label:'delta', type: 'latin', amount: 4},
+                        {id:'e', label: 'epsilon', type: 'greek', amount: 8}
+                    ];
                 }
 
                 function xsuite() {
@@ -80,12 +96,12 @@
                 xsuite('create', function () {
 
                     test('it should create a list by setting `data`', function (done) {
-                        var node = dom('ml-list', {}, body);
+                        var node = dom('ml-list', {attr:{selectable: true}}, body);
                         node.data = data();
                         onDomReady(node, function () {
                             var nodes = dom.queryAll(node, 'li');
                             expect(nodes.length).to.equal(5);
-                            expect(nodes[0].getAttribute('selected')).to.equal('true');
+                            expect(nodes[0].getAttribute('selected')).to.equal('');
                             node.destroy();
                             done();
                         });
@@ -99,7 +115,7 @@
                         onDomReady(node, function () {
                             var nodes = dom.queryAll(node, 'li');
                             expect(nodes.length).to.equal(5);
-                            expect(nodes[0].getAttribute('selected')).to.equal('true');
+                            //expect(nodes[0].getAttribute('selected')).to.equal('true');
                             node.destroy();
                             done();
                         });
@@ -114,7 +130,6 @@
                         var div = dom('div', {html:str}, body);
                         var node = dom.query('ml-list');
                         onDomReady(node, function () {
-
                             node.add({id:'f', label:'zeta', selected:true});
 
                             var nodes = dom.queryAll(node, 'li');
@@ -143,9 +158,9 @@
                     });
                 });
 
-                suite('interact', function () {
-                    xtest('it should emit a `change` event', function (done) {
-                        var node = dom('ml-list', {attr:{keys:true}}, body);
+                xsuite('interact', function () {
+                    test('it should emit a `change` event', function (done) {
+                        var node = dom('ml-list', {attr:{keys:true, selectable: true}}, body);
                         node.data = data();
                         onDomReady(node, function () {
                             var
@@ -162,8 +177,8 @@
                         });
                     });
 
-                    xtest('it should emit a `change` event, multiple', function (done) {
-                        var node = dom('ml-list', {attr:{keys:true, multiple:true}}, body);
+                    test('it should emit a `change` event, multiple', function (done) {
+                        var node = dom('ml-list', {attr:{keys:true, multiple:true, selectable: true}}, body);
                         node.data = data();
                         onDomReady(node, function () {
                             var nodes = dom.queryAll(node, 'li');
@@ -178,7 +193,7 @@
                     });
 
                     test('it should shift-select multiple items', function (done) {
-                        var node = dom('ml-list', {attr:{keys:true, multiple:true}}, body);
+                        var node = dom('ml-list', {attr:{keys:true, multiple:true, selectable: true}}, body);
                         node.data = data();
 
                         onDomReady(node, function () {
@@ -198,7 +213,7 @@
                     });
 
                     test('it should control-select multiple items', function (done) {
-                        var node = dom('ml-list', {attr:{keys:true, multiple:true}}, body);
+                        var node = dom('ml-list', {attr:{keys:true, multiple:true, selectable: true}}, body);
                         node.data = data();
 
                         onDomReady(node, function () {
@@ -216,9 +231,17 @@
                             done();
                         });
                     });
-                })
+                });
 
+                suite('templated', function () {
+                    test('it should have customizeable rows', function (done) {
+                        var node = dom('ml-list', {attr: {keys: true}}, body);
+                        node.data = data2();
+                    });
+                });
             });
+
+
 
             mocha.run();
         });
