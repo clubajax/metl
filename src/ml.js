@@ -29,7 +29,26 @@ export default {
             });
         }
     },
-    store (node, options) {
+    
+    convertBracesToRefs: function (frag) {
+        console.log('frag', frag.children[0]);
+        var refs = {};
+        walkDom(frag.children[0], refs);
+        console.log('refs', refs);
+        return refs;
+    }
+}
 
+function walkDom (node, refs) {
+    var i;
+    if(!node.children.length){
+        if(/\{\{/.test(node.innerHTML)){
+            refs[node.innerHTML.replace('{{','').replace('}}','')] = node;
+            node.innerHTML = '';
+        }
+        return;
+    }
+    for(i = 0; i < node.children.length; i++){
+        walkDom(node.children[i], refs);
     }
 }

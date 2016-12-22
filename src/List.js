@@ -1,13 +1,21 @@
 import BaseComponent from 'BaseComponent';
+// plugins
+import properties from 'BaseComponent/src/properties';
+import template from 'BaseComponent/src/template';
+
+// library
 import ml from './ml';
 const keys = require('key-nav');
 const store = require('store');
 const dom = require('dom');
+
 const ITEM_CLASS = 'ml-list';
 const onDomReady = window.onDomReady;
 
+console.log('properties', properties);
 // TODO
 
+// first-item selection should be optional
 // nav-keys would be different with cells
 // virtual scrolling
 // list needs to act table-like, with multiple display-values
@@ -24,11 +32,11 @@ const onDomReady = window.onDomReady;
 class List extends BaseComponent {
 
     static get observedAttributes() {
-        return ['horizontal', 'value', 'disabled', 'keys', 'multiple', 'virtual', 'selectable'];
+        return ['horizontal', 'value', 'disabled', 'keys', 'multiple', 'virtual', 'selectable', 'rowTemplateId', 'tId'];
     }
 
     get props() {
-        return ['horizontal', 'value', 'keys', 'disabled', 'multiple', 'virtual', 'selectable'];
+        return ['horizontal', 'value', 'keys', 'disabled', 'multiple', 'virtual', 'selectable', 'rowTemplateId', 'tId'];
     }
 
     constructor(...args) {
@@ -46,14 +54,52 @@ class List extends BaseComponent {
         this[name] = dom.normalize(value);
     }
 
+    renderTemplate () {
+        let
+            frag = document.createDocumentFragment(),
+            tmpl = this.rowNode,
+            refs = this.rowRefs,
+            items = this.store.query(),
+            clone;
+
+        this.innerHTML = '';
+        items.forEach(function (item) {
+            Object.keys(item).forEach(function (key) {
+                if(refs[key]){
+                    //console.log('refs', refs[key]);
+                    refs[key].innerHTML = item[key];
+                }
+            });
+            clone = tmpl.cloneNode(true);
+            console.log('clone', clone);
+            frag.appendChild(clone);
+        });
+        this.appendChild(frag);
+    }
+
     render () {
+        if(!this.rowNode){
+            if(this.rowTemplateId){
+                this.rowNode = BaseComponent.clone(dom.byId(this.rowTemplateId));
+                console.log('this.rowNode', this.rowNode);
+                this.rowRefs = ml.convertBracesToRefs(this.rowNode);
+            }
+        }
+        if(this.rowNode){
+            this.renderTemplate();
+            this.connectEvents();
+            return;
+        }
         let
             frag = document.createDocumentFragment(),
             items = this.store.query(),
             selected = this.store.selection,
             selNode;
 
-        //console.log('items', items);
+        console.log('rowTemplateId', this.rowTemplateId, this.getAttribute('rowTemplateId'));
+
+
+
         this.innerHTML = '';
         items.forEach(function (item) {
             frag.appendChild(toNode(item));
