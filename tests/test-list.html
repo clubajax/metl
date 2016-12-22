@@ -68,7 +68,7 @@
                     expect = chai.expect,
                     body = document.body;
                 function data () {
-                    return data = [{id:1, label:'alpha'}, {id:2, label: 'beta'}, {id:3, label: 'gamma'}, {id:4, label:'delta'}, {id:5, label: 'epsilon'}];
+                    return [{id:'a', label:'alpha'}, {id:'b', label: 'beta'}, {id:'c', label: 'gamma'}, {id:'d', label:'delta'}, {id:'e', label: 'epsilon'}];
                 }
 
                 function xsuite() {
@@ -107,7 +107,7 @@
 
                 });
 
-                suite('add', function () {
+                xsuite('add', function () {
 
                     test('it should add items to existing', function (done) {
                         var str = '<ml-list tabindex="0"><li class="ml-list" id="a">alpha</li><li id="b">beta</li><li id="c">gamma</li><li id="d">delta</li><li id="e">epsilon</li></ml-list>'
@@ -137,21 +137,39 @@
 
                             var nodes = dom.queryAll(node, 'li');
                             expect(nodes.length).to.equal(8);
-                            //node.destroy();
+                            node.destroy();
                             done();
                         });
                     });
                 });
 
                 suite('interact', function () {
-                    test('it should emit a `change` event', function (done) {
-                        var node = dom('ml-list', {}, body);
+                    xtest('it should emit a `change` event', function (done) {
+                        var node = dom('ml-list', {attr:{keys:true}}, body);
+                        node.data = data();
+                        onDomReady(node, function () {
+                            var
+                                nodes = dom.queryAll(node, 'li'),
+                                h = node.on('change', function (e) {
+                                    console.log('CHANGE', e.value);
+                                    expect(e.value.id).to.equal('c');
+                                    h.remove();
+                                    node.destroy();
+                                    done();
+                                });
+                            console.log('nodes', nodes);
+                            on.emit(node.children[2], 'click');
+                        });
+                    });
+
+                    xtest('it should emit a `change` event, multiple', function (done) {
+                        var node = dom('ml-list', {attr:{keys:true, multiple:true}}, body);
                         node.data = data();
                         onDomReady(node, function () {
                             var nodes = dom.queryAll(node, 'li');
 
                             node.on('change', function (e) {
-                                expect(e.value.id).to.equal(3);
+                                expect(e.value[0].id).to.equal('c');
                             });
                             on.emit(nodes[2], 'click');
                             node.destroy();
@@ -159,18 +177,42 @@
                         });
                     });
 
-                    // TODO: key-nav to handle shift/command-click
-                    xtest('it should emit a `change` event, multiple', function (done) {
-                        var node = dom('ml-list', {}, body);
+                    test('it should shift-select multiple items', function (done) {
+                        var node = dom('ml-list', {attr:{keys:true, multiple:true}}, body);
                         node.data = data();
+
                         onDomReady(node, function () {
                             var nodes = dom.queryAll(node, 'li');
 
-                            node.on('change', function (e) {
-                                expect(e.value.id).to.equal(3);
-                            });
-                            on.emit(nodes[2], 'click');
+                            on.emit(nodes[1], 'click');
+                            on.emit(document, 'keydown', {key:'Shift'});
+
+                            on.emit(dom.queryAll(node, 'li')[3], 'click');
+                            on.emit(document, 'keyup');
+
+                            expect(dom.queryAll(node, 'li[selected]').length).to.equal(3);
+
                             node.destroy();
+                            done();
+                        });
+                    });
+
+                    test('it should control-select multiple items', function (done) {
+                        var node = dom('ml-list', {attr:{keys:true, multiple:true}}, body);
+                        node.data = data();
+
+                        onDomReady(node, function () {
+                            var nodes = dom.queryAll(node, 'li');
+
+                            on.emit(nodes[0], 'click');
+                            on.emit(document, 'keydown', {key:'Control'});
+                            on.emit(dom.queryAll(node, 'li')[2], 'click');
+                            on.emit(dom.queryAll(node, 'li')[4], 'click');
+                            on.emit(document, 'keyup');
+
+                            expect(dom.queryAll(node, 'li[selected]').length).to.equal(3);
+
+                            //node.destroy();
                             done();
                         });
                     });

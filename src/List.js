@@ -1,4 +1,5 @@
 import BaseComponent from 'BaseComponent';
+import ml from './ml';
 const keys = require('key-nav');
 const store = require('store');
 const dom = require('dom');
@@ -7,10 +8,9 @@ const onDomReady = window.onDomReady;
 
 // TODO
 
-// m-list instead of ml-list (css var for prefix?)
-// bools/booleans (like disabled) to work with props
-// nav-keys an option?
 // nav-keys would be different with cells
+// multi-select
+//      - will need to be store-driven, due to virtual scrolling
 // virtual scrolling
 // list needs to act table-like, with multiple display-values
 //      can that be extended into tds
@@ -20,21 +20,21 @@ const onDomReady = window.onDomReady;
 //  each
 //  if
 
+// maybes:
+// m-list instead of ml-list (css var for prefix?)
+
 class List extends BaseComponent {
 
     static get observedAttributes() {
-        return ['horizontal', 'value', 'disabled'];
+        return ['horizontal', 'value', 'disabled', 'keys', 'multiple'];
     }
 
     get props() {
-        return ['horizontal', 'value', 'disabled'];
+        return ['horizontal', 'value', 'keys', 'disabled', 'multiple'];
     }
 
     constructor(...args) {
         super(args);
-        this.store = store({
-            plugins: 'filter,sort,paginate,selection'
-        });
     }
 
     domReady() {
@@ -45,42 +45,56 @@ class List extends BaseComponent {
     }
 
     attributeChanged(name, value) {
-        this[name] = value;
-        //if (name === 'horizontal') {
-        //    dom.classList.toggle('horizontal', value);
-        //}
+        this[name] = dom.normalize(value);
     }
 
     render () {
-        onDomReady(this, () => {
-            let
-                frag = document.createDocumentFragment(),
-                items = this.store.query(),
-                selected = this.store.selection,
-                selNode;
+        let
+            frag = document.createDocumentFragment(),
+            items = this.store.query(),
+            selected = this.store.selection,
+            selNode;
 
-            //console.log('items', items);
-            this.innerHTML = '';
-            items.forEach(function (item) {
-                frag.appendChild(toNode(item));
-            });
+        //console.log('items', items);
+        this.innerHTML = '';
+        items.forEach(function (item) {
+            frag.appendChild(toNode(item));
+        });
 
-            if(selected) {
+        if(selected) {
+            if(this.multiple){
+                //console.log('mult sel', selected.map(function(m){return m.id;}).join(',') );
+                selected.forEach(function (item) {
+                    selNode = frag.querySelector(('#' + item.id));
+                    selNode.setAttribute('selected', '');
+                });
+            }else{
                 selNode = frag.querySelector(('#' + selected.id));
                 selNode.setAttribute('selected', '');
-            }else{
-                selNode = frag.children[0];
-                selNode.setAttribute('selected', '');
-                this.store.selection = selNode.id;
             }
-            this.appendChild(frag);
-            this.connectEvents();
-        });
+
+        }else{
+            // default to first - needs to be optional
+            selNode = frag.children[0];
+            selNode.setAttribute('selected', '');
+            this.store.selection = selNode.id;
+        }
+        this.appendChild(frag);
+        this.connectEvents();
     }
 
     add (itemOrItems) {
-        this.store.add(formatItems(itemOrItems));
-        this.render();
+        onDomReady(this, () => {
+            if(!this.store){
+                this.store = store({
+                    plugins: 'filter,sort,paginate,selection',
+                    selection:{multiple: this.multiple}
+                });
+            }
+            this.store.add(formatItems(itemOrItems));
+            this.render();
+        });
+
     }
 
     set data (itemOrItems) {
@@ -89,27 +103,17 @@ class List extends BaseComponent {
     }
 
     clear () {
-
-    }
-
-    onHighlight (e) {
-        //console.log('hi!', e);
-    }
-
-    onSelect (e) {
-        console.log('sel', e);
-        let selNode = e.detail.value;
-        this.store.selection = selNode.id;
-        console.log('this.store.selection', selNode.id, this.store.selection);
-        this.emit('change', {value: this.store.selection});
+        if(this.store){
+            this.store.clear();
+        }
     }
 
     connectEvents() {
         if (this.children.length) { // && !isOwned(this tagname??)
-            let controller = keys(this, {roles:true});
-            this.registerHandle(on.makeMultiHandle(controller.handles));
-            this.on('key-highlight', this.onHighlight.bind(this));
-            this.on('key-select', this.onSelect.bind(this));
+            if(this.keys) {
+                ml.keys(this, {multiple: this.multiple});
+                this.on('change', this.render.bind(this));
+            }
             this.connectEvents = function () {}
         }
     }
