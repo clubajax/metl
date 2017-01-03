@@ -2,7 +2,7 @@
   "name": "metl",
   "version": "0.0.1",
   "description": "Core library for metl UI web components",
-  "main": "index.js",
+  "main": "dist/build.js",
   "scripts": {
     "test": "webpack-dev-server --hot",
     "dev": "webpack-dev-server --hot",
