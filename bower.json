@@ -3,7 +3,7 @@
   "description": "Core library for metl UI web components",
   "main": "metl.js",
   "authors": [
-    "mike@mikewilcox.net"
+    "anm9tr@gmail.com"
   ],
   "license": "MIT",
   "keywords": [
@@ -19,11 +19,12 @@
     "heya-async": "heya/async",
     "heya-defer": "heya/defer#^1.1.0",
     "heya-io": "heya/io#^1.0.8",
-    "webcomponents": "webcomponents/custom-elements#1.0.0-alpha.3"
+    "webcomponents": "webcomponents/custom-elements#1.0.0-alpha.3",
+    "randomizer": "clubajax/randomizer",
+    "BaseComponent": "clubajax/BaseComponent"
   },
   "devDependencies": {
     "mocha": "^3.2.0",
-    "chai": "^3.5.0",
-    "BaseComponent": "clubajax/BaseComponent"
+    "chai": "^3.5.0"
   }
 }

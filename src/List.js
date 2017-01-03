@@ -2,6 +2,7 @@ import BaseComponent from 'BaseComponent';
 // plugins
 import properties from 'BaseComponent/src/properties';
 import template from 'BaseComponent/src/template';
+import itemTemplate from 'BaseComponent/src/item-template';
 
 // library
 import ml from './ml';
@@ -12,16 +13,14 @@ const dom = require('dom');
 const ITEM_CLASS = 'ml-list';
 const onDomReady = window.onDomReady;
 
-console.log('properties', properties);
 // TODO
 
+// store.save(item)?
+// list without item IDs?
 // first-item selection should be optional
 // nav-keys would be different with cells
 // virtual scrolling
-// list needs to act table-like, with multiple display-values
-//      can that be extended into tds
-// template for a row
-// different row templates?
+// different row templates ---?
 //  template props
 //  each
 //  if
@@ -32,11 +31,15 @@ console.log('properties', properties);
 class List extends BaseComponent {
 
     static get observedAttributes() {
-        return ['horizontal', 'value', 'disabled', 'keys', 'multiple', 'virtual', 'selectable', 'rowTemplateId', 'tId'];
+        return ['horizontal', 'value', 'disabled', 'keys', 'multiple', 'virtual', 'selectable', 'rowTemplateId'];
     }
 
-    get props() {
-        return ['horizontal', 'value', 'keys', 'disabled', 'multiple', 'virtual', 'selectable', 'rowTemplateId', 'tId'];
+    get props () {
+        return ['value', 'rowTemplateId'];
+    }
+
+    get bools () {
+        return ['horizontal', 'keys', 'multiple', 'virtual', 'selectable'];
     }
 
     constructor(...args) {
@@ -50,84 +53,65 @@ class List extends BaseComponent {
         }
     }
 
-    attributeChanged(name, value) {
-        this[name] = dom.normalize(value);
-    }
-
-    renderTemplate () {
+    renderSelection (parent) {
         let
-            frag = document.createDocumentFragment(),
-            tmpl = this.rowNode,
-            refs = this.rowRefs,
-            items = this.store.query(),
-            clone;
-
-        this.innerHTML = '';
-        items.forEach(function (item) {
-            Object.keys(item).forEach(function (key) {
-                if(refs[key]){
-                    //console.log('refs', refs[key]);
-                    refs[key].innerHTML = item[key];
-                }
-            });
-            clone = tmpl.cloneNode(true);
-            console.log('clone', clone);
-            frag.appendChild(clone);
-        });
-        this.appendChild(frag);
-    }
-
-    render () {
-        if(!this.rowNode){
-            if(this.rowTemplateId){
-                this.rowNode = BaseComponent.clone(dom.byId(this.rowTemplateId));
-                console.log('this.rowNode', this.rowNode);
-                this.rowRefs = ml.convertBracesToRefs(this.rowNode);
-            }
-        }
-        if(this.rowNode){
-            this.renderTemplate();
-            this.connectEvents();
-            return;
-        }
-        let
-            frag = document.createDocumentFragment(),
-            items = this.store.query(),
             selected = this.store.selection,
             selNode;
 
-        console.log('rowTemplateId', this.rowTemplateId, this.getAttribute('rowTemplateId'));
-
-
-
-        this.innerHTML = '';
-        items.forEach(function (item) {
-            frag.appendChild(toNode(item));
-        });
-
         if(this.selectable) {
+            dom.queryAll(this, '[selected]').forEach(function (node) {
+                node.removeAttribute('selected');
+            });
+
             if (selected) {
                 if (this.multiple) {
-                    //console.log('mult sel', selected.map(function(m){return m.id;}).join(',') );
                     selected.forEach(function (item) {
-                        selNode = frag.querySelector(('#' + item.id));
+                        selNode = parent.querySelector(('#' + item.id));
                         selNode.setAttribute('selected', '');
                     });
                 }
                 else {
-                    selNode = frag.querySelector(('#' + selected.id));
+                    selNode = parent.querySelector(('#' + selected.id));
                     selNode.setAttribute('selected', '');
                 }
 
             }
             else {
-                // default to first - needs to be optional
-                selNode = frag.children[0];
+                // default to first
+                // TODO needs to be optional
+                selNode = parent.children[0];
                 selNode.setAttribute('selected', '');
                 this.store.selection = selNode.id;
             }
+
         }
-        this.appendChild(frag);
+    }
+
+    render () {
+
+        let
+            changes = this.store.hasListChanged,
+            frag,
+            items;
+
+
+        if(changes) {
+            items = this.store.query();
+            if (this.itemTemplate) {
+                console.log('itemTemplate!');
+                this.renderList(items, this);
+            }else{
+                frag = document.createDocumentFragment();
+                items.forEach(function (item) {
+                    frag.appendChild(toNode(item));
+                });
+                this.innerHTML = '';
+                this.appendChild(frag);
+            }
+        }
+
+        this.renderSelection(this);
+
         this.connectEvents();
     }
 
@@ -182,18 +166,13 @@ function toNode (item) {
 function formatItems(itemOrItems) {
     return (Array.isArray(itemOrItems) ? itemOrItems : [itemOrItems]).map(function (item) {
         if(dom.isNode(item)){
-            // is node - create data
-            //item.classList.add(ITEM_CLASS);
             return {
                 id: item.id,
                 value: item.value,
                 selected: item.selected,
-                //node: item,
                 label: item.innerHTML
             }
         }else{
-            // is object - create node
-            //item.node = dom('li', {html: item.label, id: item.id, className: ITEM_CLASS, attr:{value: item.value, selected: item.selected}});
             return item;
         }
     });

@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>METL Virtual List</title>
+    <link rel="stylesheet" href="../dist/main.css" />
+    <script src="//localhost:35731/livereload.js"></script>
+    <script src="../bower_components/webcomponents/src/native-shim.js"></script>
+    <script src="../bower_components/dom/src/dom.js"></script>
+    <script src="../bower_components/on/dist/on.js"></script>
+    <script src="../bower_components/randomizer/rand.js"></script>
+
+    <style>
+        .virtual-list{
+            position: relative;
+            width: 200px;
+            height: 500px;
+            border: 1px solid #ccc;
+            background: #fffddb;
+            overflow: hidden;
+        }
+        .virtual-list-scroller{
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            background: #ffdadf;
+            overflow-y: auto;
+            overflow-x: hidden;
+            opacity: .5;
+            z-index: 1;
+        }
+        .virtual-list-scroller-fake{
+            width: 100px;
+            height: 2000px;
+            background: #cac6ff;
+        }
+        .virtual-list-real{
+            position: relative;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>METL Virtual List</h1>
+
+    <div class="virtual-list">
+        <div class="virtual-list-scroller">
+            <div class="virtual-list-scroller-fake"></div>
+        </div>
+        <div class="virtual-list-real"></div>
+    </div>
+
+    <script>
+        // https://www.elliottsprehn.com/personal/infinite-scroll.html
+//        Do: separate scroll handler from rAF render loop
+//        Do: minimize layout cost in render loop.  (Use textContent rather than innerHTML. Use overflow:hidden to keep layout boundary close)
+//        Do: retain inertial scrolling.
+//        Do: GPU accelerate the layer
+//        Don't: have a hover effect that can trigger during scroll
+//        Don't: do anything more than get a scroll offset in the scroll event handler
+        console.log('', rand.data(3));
+        function data () {
+            var i, amt = 100, str = '', list = [], f, l;
+            for(i = 0; i <= amt; i++){
+                f = rand.name();
+                l = rand.name();
+                list.push(f+' '+l);
+                str += '<div>'+rand.name()+' '+rand.name()+'</div>\n';
+            }
+            console.log('', list);
+
+            var node = dom.query('.virtual-list-real');
+            node.innerHTML = str;
+        }
+        data();
+    </script>
+</body>
+</html>

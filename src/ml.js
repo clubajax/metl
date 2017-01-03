@@ -31,10 +31,8 @@ export default {
     },
     
     convertBracesToRefs: function (frag) {
-        console.log('frag', frag.children[0]);
         var refs = {};
         walkDom(frag.children[0], refs);
-        console.log('refs', refs);
         return refs;
     }
 }

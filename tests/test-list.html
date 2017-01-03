@@ -30,6 +30,9 @@
             padding: 0;
             margin: 0;
         }
+        ml-list{
+            margin: 15px;
+        }
         .tmpl-row{
             padding: 5px;
         }
@@ -60,13 +63,13 @@
     <div id="mocha"></div>
 
     <template id="list-template">
-        <div class="tmpl-row">
+        <li class="tmpl-row">
             <span>row:</span>
             <span>{{id}}</span>
             <span>{{label}}</span>
             <span>{{type}}</span>
             <span>{{amount}}</span>
-        </div>
+        </li>
     </template>
     <script>
 
@@ -123,7 +126,7 @@
                 function xtest() {
                 }
 
-                xsuite('create', function () {
+                suite('create', function () {
 
                     test('it should create a list by setting `data`', function (done) {
                         var node = dom('ml-list', {attr:{selectable: true}}, body);
@@ -153,7 +156,7 @@
 
                 });
 
-                xsuite('add', function () {
+                suite('add', function () {
 
                     test('it should add items to existing', function (done) {
                         var str = '<ml-list tabindex="0"><li class="ml-list" id="a">alpha</li><li id="b">beta</li><li id="c">gamma</li><li id="d">delta</li><li id="e">epsilon</li></ml-list>'
@@ -188,7 +191,7 @@
                     });
                 });
 
-                xsuite('interact', function () {
+                suite('interact', function () {
                     test('it should emit a `change` event', function (done) {
                         var node = dom('ml-list', {attr:{keys:true, selectable: true}}, body);
                         node.data = data();
@@ -196,13 +199,11 @@
                             var
                                 nodes = dom.queryAll(node, 'li'),
                                 h = node.on('change', function (e) {
-                                    console.log('CHANGE', e.value);
                                     expect(e.value.id).to.equal('c');
                                     h.remove();
                                     node.destroy();
                                     done();
                                 });
-                            console.log('nodes', nodes);
                             on.emit(node.children[2], 'click');
                         });
                     });
@@ -257,16 +258,36 @@
 
                             expect(dom.queryAll(node, 'li[selected]').length).to.equal(3);
 
-                            //node.destroy();
+                            node.destroy();
                             done();
                         });
                     });
                 });
 
                 suite('templated', function () {
-                    test('it should have customizeable rows', function () {
-                        var node = dom('ml-list', {attr: {rowTemplateId:'list-template'}}, body);
+                    test('it should have customizeable rows', function (done) {
+                        var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
                         node.data = data2();
+
+                        onDomReady(node, function () {
+                            expect(dom.queryAll(node, 'span').length).to.equal(25);
+                            done();
+                        });
+
+                    });
+                });
+
+                suite('rendering', function () {
+                    test('it should not re-render if the selection changes but the items do not', function (done) {
+                        var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
+                        node.data = data2();
+                        onDomReady(node, function () {
+                            var nodes = dom.queryAll(node, 'li');
+                            expect(nodes[0].hasAttribute('selected')).to.equal(true);
+                            on.emit(nodes[1], 'click');
+                            expect(nodes[1].hasAttribute('selected')).to.equal(true);
+                            done();
+                        });
                     });
                 });
             });
