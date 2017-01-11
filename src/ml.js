@@ -1,7 +1,7 @@
 const keys = require('key-nav');
 const store = require('store');
 
-export default {
+module.exports = {
     keys (node, options) {
         let controller = keys(node, {roles:true});
         node.registerHandle(on.makeMultiHandle(controller.handles));
@@ -35,7 +35,7 @@ export default {
         walkDom(frag.children[0], refs);
         return refs;
     }
-}
+};
 
 function walkDom (node, refs) {
     var i;

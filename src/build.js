@@ -1,4 +1,4 @@
-import BaseComponent from 'BaseComponent';
-import MlList from './List';
+const BaseComponent = require('BaseComponent');
+require('./List');
 customElements.define('base-component', BaseComponent);
 

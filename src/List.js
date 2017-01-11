@@ -1,11 +1,11 @@
-import BaseComponent from 'BaseComponent';
+const BaseComponent  = require('BaseComponent');
 // plugins
-import properties from 'BaseComponent/src/properties';
-import template from 'BaseComponent/src/template';
-import itemTemplate from 'BaseComponent/src/item-template';
+require('BaseComponent/src/properties');
+require('BaseComponent/src/template');
+require('BaseComponent/src/item-template');
 
 // library
-import ml from './ml';
+let ml = require('./ml');
 const keys = require('key-nav');
 const store = require('store');
 const dom = require('dom');
@@ -215,4 +215,4 @@ function isOwned(node, tagName) {
     return false;
 }
 
-export default List;
+module.exports = List;
