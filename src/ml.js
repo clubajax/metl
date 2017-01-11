@@ -7,6 +7,7 @@ module.exports = {
         node.registerHandle(on.makeMultiHandle(controller.handles));
         node.on('key-select', function (event) {
             let selNode = event.detail.value;
+            console.log('ML SEL', selNode.id);
             node.store.selection = selNode.id;
             node.emit('change', {value: node.store.selection});
         });

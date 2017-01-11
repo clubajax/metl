@@ -591,10 +591,12 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
             }
 
             function select (node) {
+                console.log('select:', node);
                 if(options.multiple){
                     if(selected){
                         if(!shift && !meta) {
                             selected.forEach(function (sel) {
+                                console.log('unselect - ', selected);
                                 sel.removeAttribute('selected');
                             });
 
@@ -621,6 +623,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
                 }else{
                     if(selected){
+                        console.log('unselect', selected);
                         selected.removeAttribute('selected');
                     }
                     if(node) {
