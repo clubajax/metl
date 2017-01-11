@@ -1,25 +1,3 @@
-//module.exports = function (grunt) {
-//
-//    grunt.initConfig({
-//        metl:{
-//            less:{
-//                main:{
-//                    src:'less/main.less',
-//                    output: 'dist/main.css'
-//                }
-//            },
-//            watch:{
-//                less:['./less/*.less'],
-//                scripts:['./tests/**/*.html'],
-//                port: 35731
-//            }
-//        }
-//    });
-//
-//    grunt.loadNpmTasks('grunt-metl-tools');
-//};
-
-
 'use strict';
 
 let
@@ -34,7 +12,7 @@ module.exports = function (grunt) {
         store = path.resolve(nm, 'store/dist/store.js'),
         keys = path.resolve(nm, 'key-nav/dist/keys.js'),
         poly = path.resolve(nm, 'keyboardevent-key-polyfill/index'),
-        vendorAliases = ['dom', 'keyboardevent-key-polyfill', 'on', 'store', 'key-nav'],
+        vendorAliases = ['keyboardevent-key-polyfill', 'dom', 'on', 'store', 'key-nav'],
         sourceMaps = false,
         watch = false,
         watchPort = 35760,
@@ -62,7 +40,7 @@ module.exports = function (grunt) {
                     // not consuming any modules
                     external: null,
                     browserifyOptions: {
-                        debug: sourceMaps
+                        debug: false
                     }
                 }
             },
@@ -76,16 +54,16 @@ module.exports = function (grunt) {
                     keepAlive: false,
                     external: vendorAliases,
                     browserifyOptions: {
-                        debug: sourceMaps
+                        debug: true
                     },
                     // transform not using babel in dev-mode.
                     // if developing in IE or using very new features,
                     // change devBabel to `true`
                     transform: devBabel ? babelTransform : [],
-                    postBundleCB: function (err, src, next) {
-                        console.timeEnd('build');
-                        next(err, src);
-                    }
+                    //postBundleCB: function (err, src, next) {
+                    //    console.timeEnd('build');
+                    //    next(err, src);
+                    //}
                 }
             },
             prod: {

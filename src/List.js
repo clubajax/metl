@@ -94,6 +94,7 @@ class List extends BaseComponent {
             frag,
             items;
 
+        console.log('render!', changes);
 
         if(changes) {
             items = this.store.query();

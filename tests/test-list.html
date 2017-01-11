@@ -6,14 +6,15 @@
     <link rel="stylesheet" href="../bower_components/mocha/mocha.css">
     <script src="../bower_components/mocha/mocha.js"></script>
     <script src="../bower_components/chai/chai.js"></script>
-    <script src="../bower_components/on/dist/on.js"></script>
-    <script src="../bower_components/dom/src/dom.js"></script>
+
+
+    <!--<script src="../bower_components/on/dist/on.js"></script>-->
+    <!--<script src="../bower_components/dom/src/dom.js"></script>-->
 
     <link rel="stylesheet" href="../dist/main.css" />
     <script src="//localhost:35760/livereload.js"></script>
 
-
-    <script src="../bower_components/BaseComponent/src/loader.js" files="../dist/build.js"></script>
+    <script src="../bower_components/BaseComponent/src/loader.js" files="../dist/vendor.js,../dist/dev.js"></script>
 
     <style>
         body{
@@ -92,6 +93,16 @@
         document.addEventListener('onComponentsReady', function () {
             mocha.setup('tdd');
 
+            function loadScript(src, callback) {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = callback;
+                document.head.appendChild(script);
+            }
+
+            window.dom = require('dom');
+            window.on = require('on');
+
             suite('List', function () {
                 this.timeout(3000);
                 var suite = window.suite,
@@ -120,13 +131,23 @@
                     ];
                 }
 
+                function data3 () {
+                    return [
+                        {value:'a', label:'alpha', type: 'greek', amount: 1, selected: true},
+                        {value:'b', label: 'beta', type: 'greek', amount: 0},
+                        {value:'c', label: 'gamma', type: 'latin', amount: 5},
+                        {value:'d', label:'delta', type: 'latin', amount: 4},
+                        {value:'e', label: 'epsilon', type: 'greek', amount: 8}
+                    ];
+                }
+
                 function xsuite() {
                 }
 
                 function xtest() {
                 }
 
-                suite('create', function () {
+                xsuite('create', function () {
 
                     test('it should create a list by setting `data`', function (done) {
                         var node = dom('ml-list', {attr:{selectable: true}}, body);
@@ -156,7 +177,7 @@
 
                 });
 
-                suite('add', function () {
+                xsuite('add', function () {
 
                     test('it should add items to existing', function (done) {
                         var str = '<ml-list tabindex="0"><li class="ml-list" id="a">alpha</li><li id="b">beta</li><li id="c">gamma</li><li id="d">delta</li><li id="e">epsilon</li></ml-list>'
@@ -191,7 +212,7 @@
                     });
                 });
 
-                suite('interact', function () {
+                xsuite('interact', function () {
                     test('it should emit a `change` event', function (done) {
                         var node = dom('ml-list', {attr:{keys:true, selectable: true}}, body);
                         node.data = data();
@@ -264,7 +285,7 @@
                     });
                 });
 
-                suite('templated', function () {
+                xsuite('templated', function () {
                     test('it should have customizeable rows', function (done) {
                         var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
                         node.data = data2();
@@ -290,6 +311,20 @@
                         });
                     });
                 });
+
+                suite('ids and values', function () {
+                    test('it should handle a list with values and not IDs', function (done) {
+                        var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, selectable: true}}, body);
+                        node.data = data2();
+                        onDomReady(node, function () {
+                            var nodes = dom.queryAll(node, 'li');
+                            expect(nodes[0].hasAttribute('selected')).to.equal(true);
+//                            on.emit(nodes[1], 'click');
+//                            expect(nodes[1].hasAttribute('selected')).to.equal(true);
+                            done();
+                        });
+                    });
+                });
             });
 
 
@@ -298,5 +333,6 @@
         });
 
     </script>
+
 </body>
 </html>
