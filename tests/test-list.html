@@ -64,7 +64,7 @@
     <div id="mocha"></div>
 
     <template id="list-template">
-        <li class="tmpl-row" id="{{id}}">
+        <li class="tmpl-row" id="{{id}}" value="{{value}}">
             <span>row:</span>
             <span>{{id}}</span>
             <span>{{label}}</span>
@@ -298,7 +298,7 @@
                     });
                 });
 
-                suite('rendering', function () {
+                xsuite('rendering', function () {
                     test('it should not re-render if the selection changes but the items do not', function (done) {
                         var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
                         node.data = data2();
@@ -312,10 +312,23 @@
                     });
                 });
 
-                xsuite('ids and values', function () {
+                suite('ids and values', function () {
+                    xtest('it should handle a list with values and not IDs', function (done) {
+                        var node = dom('ml-list', {attr: {keys:true, multiple:true, selectable: true}}, body);
+                        node.data = data3();
+                        onDomReady(node, function () {
+                            var nodes = dom.queryAll(node, 'li');
+                            expect(nodes[0].hasAttribute('selected')).to.equal(true);
+                            on.emit(nodes[1], 'click');
+                            expect(nodes[1].hasAttribute('selected')).to.equal(true);
+                            node.destroy();
+                            done();
+                        });
+                    });
+
                     test('it should handle a list with values and not IDs', function (done) {
                         var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
-                        node.data = data2();
+                        node.data = data3();
                         onDomReady(node, function () {
                             var nodes = dom.queryAll(node, 'li');
                             expect(nodes[0].hasAttribute('selected')).to.equal(true);

@@ -591,12 +591,10 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
             }
 
             function select (node) {
-                console.log('select:', node);
                 if(options.multiple){
                     if(selected){
                         if(!shift && !meta) {
                             selected.forEach(function (sel) {
-                                console.log('unselect - ', selected);
                                 sel.removeAttribute('selected');
                             });
 
@@ -623,7 +621,6 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
                 }else{
                     if(selected){
-                        console.log('unselect', selected);
                         selected.removeAttribute('selected');
                     }
                     if(node) {
@@ -1499,6 +1496,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
         dataStore = {
 
+            identifier: options.identifier,
+
             get: function (value, optionalIdentifier) {
                 // always returns one item or null
                 if (!value || !this.items) {
@@ -1723,6 +1722,24 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
         console.warn('unknown plugins type:', object);
         return [];
     }
+
+    store.getIdentifier = function (itemOrItems) {
+        var item = Array.isArray(itemOrItems) ? itemOrItems[0] : itemOrItems;
+        if(item.id){
+            return 'id';
+        }
+        if (item.value !== undefined) {
+            return 'value';
+        }
+        if(item.name){
+            return 'name';
+        }
+        if (item.label) {
+            return 'label';
+        }
+        console.error('items must have use of the following identifiers: `id`, `value`, `name`, `label`');
+        return null;
+    };
 
     
 

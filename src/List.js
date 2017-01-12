@@ -53,7 +53,14 @@ class List extends BaseComponent {
         }
     }
 
-    renderSelection (parent) {
+    getNodeByItem (item) {
+        let identifier = this.store.identifier,
+            value = item[identifier],
+            q = '[' + identifier + '=' + value + ']';
+        return this.querySelector(q);
+    }
+
+    renderSelection () {
         let
             selected = this.store.selection,
             selNode;
@@ -66,12 +73,12 @@ class List extends BaseComponent {
             if (selected) {
                 if (this.multiple) {
                     selected.forEach(function (item) {
-                        selNode = parent.querySelector(('#' + item.id));
+                        selNode = this.getNodeByItem(item);
                         selNode.setAttribute('selected', '');
-                    });
+                    }, this);
                 }
                 else {
-                    selNode = parent.querySelector(('#' + selected.id));
+                    selNode = this.getNodeByItem(selected);
                     selNode.setAttribute('selected', '');
                 }
 
@@ -79,7 +86,7 @@ class List extends BaseComponent {
             else {
                 // default to first
                 // TODO needs to be optional
-                selNode = parent.children[0];
+                selNode = this.children[0];
                 selNode.setAttribute('selected', '');
                 this.store.selection = selNode.id;
             }
@@ -93,8 +100,6 @@ class List extends BaseComponent {
             changes = this.store.hasListChanged,
             frag,
             items;
-
-        console.log('render!', changes);
 
         if(changes) {
             items = this.store.query();
@@ -117,12 +122,20 @@ class List extends BaseComponent {
     }
 
     add (itemOrItems) {
+        let
+            identifier = store.getIdentifier(itemOrItems),
+            options = {
+                plugins: 'filter,sort,paginate,selection',
+                selection:{multiple: this.multiple}
+            };
+
+        if(identifier && identifier !== 'id'){
+            options.identifier = identifier;
+        }
+
         onDomReady(this, () => {
             if(!this.store){
-                this.store = store({
-                    plugins: 'filter,sort,paginate,selection',
-                    selection:{multiple: this.multiple}
-                });
+                this.store = store(options);
             }
             this.store.add(formatItems(itemOrItems));
             this.render();
@@ -202,9 +215,24 @@ function getValue(node) {
     return node.textContent;
 }
 
-function getIdentifier(node) {
-    return !!node ? node.value || node.id || node : null;
-}
+//function getIdentifier(itemOrItems) {
+//    //return !!node ? node.value || node.id || node : null;
+//    let item = Array.isArray(itemOrItems) ? itemOrItems[0] : itemOrItems;
+//    if(item.id){
+//        return 'id';
+//    }
+//    if (item.value !== undefined) {
+//        return 'value';
+//    }
+//    if(item.name){
+//        return 'name';
+//    }
+//    if (item.label) {
+//        return 'label';
+//    }
+//    console.error('items must have use of the following identifiers: `id`, `value`, `name`, `label`');
+//    return null;
+//}
 
 function isOwned(node, tagName) {
     while (node && node.localName !== 'body') {

@@ -1,14 +1,20 @@
 const keys = require('key-nav');
 const store = require('store');
 
+function getValue (node, identifier) {
+    return node.getAttribute(identifier);
+}
+
 module.exports = {
     keys (node, options) {
         let controller = keys(node, {roles:true});
         node.registerHandle(on.makeMultiHandle(controller.handles));
         node.on('key-select', function (event) {
-            let selNode = event.detail.value;
-            console.log('ML SEL', selNode.id);
-            node.store.selection = selNode.id;
+            let
+                identifier = node.store.identifier,
+                selNode = event.detail.value,
+                value = getValue(selNode, identifier);
+            node.store.selection = value;
             node.emit('change', {value: node.store.selection});
         });
         if(options.multiple){
