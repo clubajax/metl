@@ -7,9 +7,10 @@ function getValue (node, identifier) {
 
 module.exports = {
     keys (node, options) {
-        let controller = keys(node, {roles:true});
+        let controller = keys(node, {roles:true, noDefault: node['no-default']});
         node.registerHandle(on.makeMultiHandle(controller.handles));
         node.on('key-select', function (event) {
+            console.log('ON KEY');
             let
                 identifier = node.store.identifier,
                 selNode = event.detail.value,

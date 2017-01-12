@@ -7,10 +7,6 @@
     <script src="../bower_components/mocha/mocha.js"></script>
     <script src="../bower_components/chai/chai.js"></script>
 
-
-    <!--<script src="../bower_components/on/dist/on.js"></script>-->
-    <!--<script src="../bower_components/dom/src/dom.js"></script>-->
-
     <link rel="stylesheet" href="../dist/main.css" />
     <script src="//localhost:35760/livereload.js"></script>
 
@@ -285,6 +281,33 @@
                     });
                 });
 
+                suite('selection', function () {
+                    xtest('it should default to the first item selected', function (done) {
+                        var node = dom('ml-list', {attr: {keys:true, multiple:true, selectable: true}}, body);
+                        node.data = data2();
+
+                        onDomReady(node, function () {
+                            let selected = dom.queryAll(node, '[selected]');
+                            expect(selected.length).to.equal(1);
+                            expect(selected[0].getAttribute('selected')).to.equal('true');
+                            //node.destroy();
+                            done();
+                        });
+                    });
+
+                    test('it should *not* default to the first item selected', function (done) {
+                        var node = dom('ml-list', {attr: {keys:true, multiple:true, selectable: true, 'no-default': true}}, body);
+                        node.data = data2();
+
+                        onDomReady(node, function () {
+                            let selected = dom.queryAll(node, '[selected]');
+                            expect(selected.length).to.equal(0);
+                            node.destroy();
+                            done();
+                        });
+                    });
+                });
+
                 xsuite('templated', function () {
                     test('it should have customizeable rows', function (done) {
                         var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
@@ -292,6 +315,7 @@
 
                         onDomReady(node, function () {
                             expect(dom.queryAll(node, 'span').length).to.equal(25);
+                            node.destroy();
                             done();
                         });
 
@@ -307,13 +331,14 @@
                             expect(nodes[0].hasAttribute('selected')).to.equal(true);
                             on.emit(nodes[1], 'click');
                             expect(nodes[1].hasAttribute('selected')).to.equal(true);
+                            node.destroy();
                             done();
                         });
                     });
                 });
 
-                suite('ids and values', function () {
-                    xtest('it should handle a list with values and not IDs', function (done) {
+                xsuite('ids and values', function () {
+                    test('it should handle a list with values and not IDs', function (done) {
                         var node = dom('ml-list', {attr: {keys:true, multiple:true, selectable: true}}, body);
                         node.data = data3();
                         onDomReady(node, function () {
@@ -326,14 +351,14 @@
                         });
                     });
 
-                    test('it should handle a list with values and not IDs', function (done) {
+                    test('it should handle a list with values and not IDs (row template)', function (done) {
                         var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
                         node.data = data3();
                         onDomReady(node, function () {
                             var nodes = dom.queryAll(node, 'li');
                             expect(nodes[0].hasAttribute('selected')).to.equal(true);
-//                            on.emit(nodes[1], 'click');
-//                            expect(nodes[1].hasAttribute('selected')).to.equal(true);
+                            on.emit(nodes[1], 'click');
+                            expect(nodes[1].hasAttribute('selected')).to.equal(true);
                             done();
                         });
                     });

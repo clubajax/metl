@@ -16,7 +16,6 @@ const onDomReady = window.onDomReady;
 // TODO
 
 // store.save(item)?
-// list without item IDs?
 // first-item selection should be optional
 // nav-keys would be different with cells
 // virtual scrolling
@@ -31,7 +30,7 @@ const onDomReady = window.onDomReady;
 class List extends BaseComponent {
 
     static get observedAttributes() {
-        return ['horizontal', 'value', 'disabled', 'keys', 'multiple', 'virtual', 'selectable', 'rowTemplateId'];
+        return ['horizontal', 'value', 'disabled', 'keys', 'multiple', 'virtual', 'selectable', 'rowTemplateId', 'no-default'];
     }
 
     get props () {
@@ -39,7 +38,7 @@ class List extends BaseComponent {
     }
 
     get bools () {
-        return ['horizontal', 'keys', 'multiple', 'virtual', 'selectable'];
+        return ['horizontal', 'keys', 'multiple', 'virtual', 'selectable', 'no-default'];
     }
 
     constructor(...args) {
@@ -64,31 +63,39 @@ class List extends BaseComponent {
         let
             selected = this.store.selection,
             selNode;
-
+        console.log('renderSelection');
         if(this.selectable) {
             dom.queryAll(this, '[selected]').forEach(function (node) {
                 node.removeAttribute('selected');
             });
 
             if (selected) {
+                console.log('s...');
                 if (this.multiple) {
+                    console.log('s1');
                     selected.forEach(function (item) {
                         selNode = this.getNodeByItem(item);
                         selNode.setAttribute('selected', '');
                     }, this);
                 }
                 else {
+                    console.log('s2');
                     selNode = this.getNodeByItem(selected);
                     selNode.setAttribute('selected', '');
                 }
 
             }
-            else {
+            else if(!this['no-default']){
+
+                console.log('DEF?', this['no-default']);
                 // default to first
                 // TODO needs to be optional
                 selNode = this.children[0];
                 selNode.setAttribute('selected', '');
                 this.store.selection = selNode.id;
+            }
+            else{
+                console.log('no selection');
             }
 
         }
@@ -104,7 +111,6 @@ class List extends BaseComponent {
         if(changes) {
             items = this.store.query();
             if (this.itemTemplate) {
-                console.log('itemTemplate!');
                 this.renderList(items, this);
             }else{
                 frag = document.createDocumentFragment();
