@@ -36,25 +36,5 @@ module.exports = {
                 node.store.shift = false;
             });
         }
-    },
-    
-    convertBracesToRefs: function (frag) {
-        var refs = {};
-        walkDom(frag.children[0], refs);
-        return refs;
     }
 };
-
-function walkDom (node, refs) {
-    var i;
-    if(!node.children.length){
-        if(/\{\{/.test(node.innerHTML)){
-            refs[node.innerHTML.replace('{{','').replace('}}','')] = node;
-            node.innerHTML = '';
-        }
-        return;
-    }
-    for(i = 0; i < node.children.length; i++){
-        walkDom(node.children[i], refs);
-    }
-}

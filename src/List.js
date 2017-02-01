@@ -16,7 +16,6 @@ const onDomReady = window.onDomReady;
 // TODO
 
 // store.save(item)?
-// first-item selection should be optional
 // nav-keys would be different with cells
 // virtual scrolling
 // different row templates ---?
@@ -54,9 +53,8 @@ class List extends BaseComponent {
 
     getNodeByItem (item) {
         let identifier = this.store.identifier,
-            value = item[identifier],
-            q = '[' + identifier + '=' + value + ']';
-        return this.querySelector(q);
+            value = item[identifier];
+        return this.querySelector(`[${identifier}=${value}]`);
     }
 
     renderSelection () {
@@ -111,6 +109,7 @@ class List extends BaseComponent {
         if(changes) {
             items = this.store.query();
             if (this.itemTemplate) {
+                console.log(' ----- item template', this.itemTemplate);
                 this.renderList(items, this);
             }else{
                 frag = document.createDocumentFragment();
@@ -220,25 +219,6 @@ function getValue(node) {
     }
     return node.textContent;
 }
-
-//function getIdentifier(itemOrItems) {
-//    //return !!node ? node.value || node.id || node : null;
-//    let item = Array.isArray(itemOrItems) ? itemOrItems[0] : itemOrItems;
-//    if(item.id){
-//        return 'id';
-//    }
-//    if (item.value !== undefined) {
-//        return 'value';
-//    }
-//    if(item.name){
-//        return 'name';
-//    }
-//    if (item.label) {
-//        return 'label';
-//    }
-//    console.error('items must have use of the following identifiers: `id`, `value`, `name`, `label`');
-//    return null;
-//}
 
 function isOwned(node, tagName) {
     while (node && node.localName !== 'body') {

@@ -46,7 +46,7 @@ module.exports = function (grunt) {
             },
             dev: {
                 files: {
-                    'dist/dev.js': ['src/build.js']
+                    'dist/dev.js': ['./tests/test-assets.js']
                 },
                 options: {
                     // not using browserify-watch; it did not trigger a page reload
@@ -60,14 +60,15 @@ module.exports = function (grunt) {
                     // if developing in IE or using very new features,
                     // change devBabel to `true`
                     transform: devBabel ? babelTransform : [],
-                    //postBundleCB: function (err, src, next) {
-                    //    console.timeEnd('build');
-                    //    next(err, src);
-                    //}
+                    postBundleCB: function (err, src, next) {
+                        console.timeEnd('build');
+                        next(err, src);
+                    }
                 }
             },
             prod: {
                 files: {
+                    // should vendor be mixed in?
                     'dist/metl.js': ['src/build.js']
                 },
                 options: {
@@ -109,8 +110,12 @@ module.exports = function (grunt) {
                 files: 'dist/main.css'
             },
             scripts: {
-                files: ['./src/**/*.js', 'tests/*.html'],
+                files: ['./src/**/*.js', 'tests/*.js'],
                 tasks: ['build-dev']
+            },
+            html: {
+                files: ['tests/*.html'],
+                tasks: []
             },
             // IMPORTANT: this options.livereload will work in the scripts
             // namespace, but then the CSS reload will not work properly
@@ -152,6 +157,11 @@ module.exports = function (grunt) {
         console.time('build');
         grunt.task.run('browserify:dev');
 
+    });
+
+    // task that builds vendor and dev files during development
+    grunt.registerTask('vendor', function (which) {
+        grunt.task.run('browserify:vendor');
     });
 
     // task that builds vendor and dev files during development
