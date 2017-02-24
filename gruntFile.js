@@ -100,12 +100,15 @@ module.exports = function (grunt) {
                 files: ['./less/*.less'],
                 tasks: ['less'],
                 options: {
-                    // keep from refreshing the whole page
-                    // (watch will just reload the stylesheet)
+                    // keep from refreshing the page
+					// the page does not care if a less file has changed
                     livereload: false
                 }
             },
-            // inert css module is needed for css reload
+            // css module is needed for css reload
+			// watch the main file. When it changes it will notify the page
+			// the livereload.js file will check if this is CSS - and if so, reload
+			// the stylesheet, and not the whole page
             css: {
                 files: 'dist/main.css'
             },
@@ -129,7 +132,7 @@ module.exports = function (grunt) {
                 // where to serve from (root is least confusing)
                 root: '.',
                 // port (if you run several projects at once these should all be different)
-                port: '9000',
+                port: '9001',
                 // host (0.0.0.0 is most versatile: it gives localhost, and it works over an Intranet)
                 host: '0.0.0.0',
                 cache: -1,
