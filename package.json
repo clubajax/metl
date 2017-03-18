@@ -4,9 +4,8 @@
   "description": "Core library for metl UI web components",
   "main": "dist/build.js",
   "scripts": {
-    "test": "webpack-dev-server --hot",
-    "dev": "webpack-dev-server --hot",
-    "deploy": "node ./scripts/deploy",
+    "start": "grunt dev",
+    "build": "grunt deploy",
     "globalize": "node ./scripts/globalES6"
   },
   "repository": {
@@ -24,7 +23,7 @@
   },
   "homepage": "https://github.com/clubajax/metl#readme",
   "dependencies": {
-    "BaseComponent": "clubajax/BaseComponent#master",
+    "BaseComponent": "clubajax/BaseComponent#transpiling",
     "on": "clubajax/on#master",
     "dom": "clubajax/dom",
     "store": "clubajax/store",

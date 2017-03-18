@@ -7,11 +7,12 @@ module.exports = function (grunt) {
 
     // collect dependencies from node_modules
     let nm = path.resolve(__dirname, 'node_modules'),
-        dom = path.resolve(nm, 'dom/src/dom.js'),
-        on = path.resolve(nm, 'on/src/on.js'),
-        store = path.resolve(nm, 'store/dist/store.js'),
-        keys = path.resolve(nm, 'key-nav/dist/keys.js'),
-        poly = path.resolve(nm, 'keyboardevent-key-polyfill/index'),
+		// abs paths??
+		// dom = path.resolve(nm, 'dom/src/dom.js'),
+		// on = path.resolve(nm, 'on/src/on.js'),
+		// store = path.resolve(nm, 'store/dist/store.js'),
+		// keys = path.resolve(nm, 'key-nav/dist/keys.js'),
+		// poly = path.resolve(nm, 'keyboardevent-key-polyfill/index'),
         vendorAliases = ['keyboardevent-key-polyfill', 'dom', 'on', 'store', 'key-nav'],
         sourceMaps = false,
         watch = false,
@@ -35,18 +36,19 @@ module.exports = function (grunt) {
                 options: {
                     // expose the modules
                     alias: vendorAliases.map(function (module) {
+						console.log('vendor:', module);
                         return module + ':';
                     }),
                     // not consuming any modules
                     external: null,
                     browserifyOptions: {
-                        debug: false
+                        debug: sourceMaps
                     }
                 }
             },
             dev: {
                 files: {
-                    'dist/dev.js': ['./tests/test-assets.js']
+                    'dist/dev.js': ['./tests/assets/test-components.js']
                 },
                 options: {
                     // not using browserify-watch; it did not trigger a page reload
@@ -54,7 +56,7 @@ module.exports = function (grunt) {
                     keepAlive: false,
                     external: vendorAliases,
                     browserifyOptions: {
-                        debug: true
+                        debug: sourceMaps
                     },
                     // transform not using babel in dev-mode.
                     // if developing in IE or using very new features,
@@ -75,7 +77,7 @@ module.exports = function (grunt) {
                     external: vendorAliases,
                     transform: babelTransform,
                     browserifyOptions: {
-                        debug: sourceMaps
+                        debug: false
                     }
                 }
             }
@@ -113,7 +115,7 @@ module.exports = function (grunt) {
                 files: 'dist/main.css'
             },
             scripts: {
-                files: ['./src/**/*.js', 'tests/*.js'],
+                files: ['./src/**/*.js', 'tests/**/*.js'],
                 tasks: ['build-dev']
             },
             html: {

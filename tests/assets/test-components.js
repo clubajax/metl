@@ -1,6 +1,11 @@
 const BaseComponent = require('BaseComponent');
+require('BaseComponent/dist/properties');
+require('BaseComponent/dist/template');
+require('BaseComponent/dist/refs');
+require('BaseComponent/dist/item-template');
+
 customElements.define('base-component', BaseComponent);
-const List = require('../src/List');
+const List = require('../../src/List');
 const on = require('on');
 
 
@@ -18,7 +23,7 @@ customElements.define('test-widget', TestWidget);
 class LatinWidget extends BaseComponent {
     constructor(...args) {
         super(args);
-        console.log('LTN INIT');
+        console.log('LTN INIT', this._uid);
         on.emit(document, 'latin-init');
     }
     domReady () {
@@ -30,7 +35,7 @@ customElements.define('latin-widget', LatinWidget);
 class GreekWidget extends BaseComponent {
     constructor(...args) {
         super(args);
-        console.log('GRK INIT');
+        console.log('GRK INIT', this._uid);
         on.emit(document, 'greek-init');
     }
     domReady () {

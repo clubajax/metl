@@ -45,6 +45,7 @@ class List extends BaseComponent {
     }
 
     domReady() {
+		console.log('LOG!');
         dom.attr(this, 'tabindex', 0);
         if(this.children.length){
             this.add(formatItems([...this.children]));

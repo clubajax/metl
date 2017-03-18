@@ -86,7 +86,9 @@
             <span>{{id}}</span>
             <span>{{label}}</span>
             <span>{{amount}}</span>
-            <span if="{{type}} === 'latin'"><latin-widget></latin-widget></span>
+            <span if="{{type}} === 'latin'">
+				<latin-widget></latin-widget>
+			</span>
             <greek-widget if="{{type}} === 'greek'"></greek-widget>
 
         </li>
@@ -156,13 +158,12 @@
                     ];
                 }
 
-                function xsuite() {
-                }
 
-                function xtest() {
-                }
 
-                xsuite('create', function () {
+
+
+
+                suite('create', function () {
 
                     test('it should create a list by setting `data`', function (done) {
                         var node = dom('ml-list', {attr:{selectable: true}}, body);
@@ -192,7 +193,7 @@
 
                 });
 
-                xsuite('add', function () {
+                suite('add', function () {
 
                     test('it should add items to existing', function (done) {
                         var str = '<ml-list tabindex="0"><li class="ml-list" id="a">alpha</li><li id="b">beta</li><li id="c">gamma</li><li id="d">delta</li><li id="e">epsilon</li></ml-list>'
@@ -227,7 +228,7 @@
                     });
                 });
 
-                xsuite('interact', function () {
+                suite('interact', function () {
                     test('it should emit a `change` event', function (done) {
                         var node = dom('ml-list', {attr:{keys:true, selectable: true}}, body);
                         node.data = data();
@@ -300,7 +301,7 @@
                     });
                 });
 
-                xsuite('selection', function () {
+                suite('selection', function () {
                     test('it should default to the first item selected', function (done) {
                         var node = dom('ml-list', {attr: {keys:true, multiple:true, selectable: true}}, body);
                         node.data = data2();
@@ -327,7 +328,7 @@
                     });
                 });
 
-                xsuite('rendering', function () {
+                suite('rendering', function () {
                     test('it should not re-render if the selection changes but the items do not', function (done) {
                         var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
                         node.data = data2();
@@ -342,7 +343,7 @@
                     });
                 });
 
-                xsuite('ids and values', function () {
+                suite('ids and values', function () {
                     test('it should handle a list with values and not IDs', function (done) {
                         var node = dom('ml-list', {attr: {keys:true, multiple:true, selectable: true}}, body);
                         node.data = data3();
@@ -371,7 +372,7 @@
 
                 suite('templated', function () {
 
-                    xtest('it should have test assets', function () {
+                    test('it should have test assets', function () {
                         var
                             fired = false;
 
@@ -384,45 +385,48 @@
                         expect(fired).to.equal(true);
                     });
 
-                    xtest('it should have customizeable rows', function (done) {
-                        var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
-                        console.log('node', node);
-                        node.data = data2();
-                        onDomReady(node, function () {
-                            expect(dom.queryAll(node, 'span').length).to.equal(25);
-                            node.destroy();
-                            done();
-                        });
-                    });
+//                    test('it should have customizeable rows', function (done) {
+//                        var node = dom('ml-list', {html: dom.byId('list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
+//                        console.log('node', node);
+//                        node.data = data2();
+//                        onDomReady(node, function () {
+//                            expect(dom.queryAll(node, 'span').length).to.equal(25);
+//                            node.destroy();
+//                            done();
+//                        });
+//                    });
 
-                    test('it should ', function (done) {
-                        on(document, 'latin-init', function () {
-                            lfired++;
-                        });
-                        on(document, 'greek-init', function () {
-                            gfired++;
-                        });
-                        var
-                            lfired = 0,
-                            gfired = 0,
-                            node = dom('ml-list', {html: dom.byId('if-list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
-                        console.log('node', node);
-                        node.data = data2();
-                        onDomReady(node, function () {
-                            expect(dom.queryAll(node, 'greek-widget').length).to.equal(3);
-                            expect(dom.queryAll(node, 'latin-widget').length).to.equal(2);
-
-
-                            // FIXME:
-                            // widgets fire even if not used
-
-                            console.log('fired:', lfired, gfired);
-                            expect(lfired).to.equal(2);
-                            expect(gfired).to.equal(3);
-                            //node.destroy();
-                            done();
-                        });
-                    });
+//                    test('it should ', function (done) {
+//                        on(document, 'latin-init', function () {
+//                            lfired++;
+//                        });
+//                        on(document, 'greek-init', function () {
+//                            gfired++;
+//                        });
+//                        var
+//                            lfired = 0,
+//                            gfired = 0,
+//
+//							node = dom('ml-list', {html: dom.byId('if-list-template'), attr: {keys:true, multiple:true, selectable: true}}, body);
+//
+//                        console.log('node', node);
+//                        node.data = data2();
+//
+//                        onDomReady(node, function () {
+//                            expect(dom.queryAll(node, 'greek-widget').length).to.equal(3);
+//                            expect(dom.queryAll(node, 'latin-widget').length).to.equal(2);
+//
+//
+//                            // FIXME:
+//                            // widgets fire even if not used
+//
+//                            console.log('fired:', lfired, gfired);
+//                            expect(lfired).to.equal(2);
+//                            expect(gfired).to.equal(3);
+//                            //node.destroy();
+//                            done();
+//                        });
+//                    });
                 });
             });
 
