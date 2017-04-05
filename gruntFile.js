@@ -68,6 +68,25 @@ module.exports = function (grunt) {
                     }
                 }
             },
+			dev2: {
+				files: {
+					'dist/dev.js': ['./tests/assets/test-classes.js']
+				},
+				options: {
+					// not using browserify-watch; it did not trigger a page reload
+					watch: false,
+					keepAlive: false,
+					external: vendorAliases,
+					browserifyOptions: {
+						debug: sourceMaps
+					},
+					transform: babelTransform,
+					postBundleCB: function (err, src, next) {
+						console.timeEnd('build');
+						next(err, src);
+					}
+				}
+			},
             prod: {
                 files: {
                     // should vendor be mixed in?
@@ -160,7 +179,7 @@ module.exports = function (grunt) {
     //
     grunt.registerTask('build-dev', function (which) {
         console.time('build');
-        grunt.task.run('browserify:dev');
+        grunt.task.run('browserify:dev2');
 
     });
 

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Test Classes</title>
+
+    <link rel="stylesheet" href="../dist/main.css" />
+    <script src="//localhost:35760/livereload.js"></script>
+
+    <script src="../bower_components/BaseComponent/src/loader.js" files="../dist/vendor.js,../dist/dev.js"></script>
+
+    <style>
+        body{
+            padding: 20px;
+            font-family: sans-serif;
+        }
+        section{
+            border: 1px solid #ccc;
+            padding: 3px;
+            margin: 5px;
+        }
+        section section{
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+        test-class{
+			display: block;
+			background-color: #00d6b2;
+            margin: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Classes</h1>
+	<test-class>class.</test-class>
+	<script>
+		document.addEventListener('onComponentsReady', function () {
+
+		});
+	</script>
+</body>
+</html>

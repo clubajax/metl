@@ -1,4 +1,4 @@
-const BaseComponent = require('BaseComponent');
+const BaseComponent = require('BaseComponent/dist/BaseComponent');
 require('BaseComponent/dist/properties');
 require('BaseComponent/dist/template');
 require('BaseComponent/dist/refs');
