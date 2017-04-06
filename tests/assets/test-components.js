@@ -5,7 +5,7 @@ require('BaseComponent/dist/refs');
 require('BaseComponent/dist/item-template');
 
 customElements.define('base-component', BaseComponent);
-const List = require('../../src/List');
+const List = require('.././List');
 const on = require('on');
 
 

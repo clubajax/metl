@@ -1,5 +1,5 @@
-import List from './src/List';
-import ml from './src/ml';
+import List from './lib/List';
+import ml from './lib/ml';
 
 ml.List = List;
 

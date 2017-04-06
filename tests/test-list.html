@@ -165,9 +165,10 @@
 
                 suite('create', function () {
 
-                    test('it should create a list by setting `data`', function (done) {
+                    test.only('it should create a list by setting `data`', function (done) {
                         var node = dom('ml-list', {attr:{selectable: true}}, body);
                         node.data = data();
+                        window.node = node
                         onDomReady(node, function () {
                             var nodes = dom.queryAll(node, 'li');
                             expect(nodes.length).to.equal(5);

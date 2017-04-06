@@ -48,7 +48,9 @@ module.exports = function (grunt) {
             },
             dev: {
                 files: {
-                    'dist/dev.js': ['./tests/assets/test-components.js']
+                    //'dist/dev.js': ['./tests/assets/test-components.js']
+					//'dist/dev.js': ['./tests/assets/test-classes.js']
+					'dist/dev.js': ['./build-profiles/dev.js']
                 },
                 options: {
                     // not using browserify-watch; it did not trigger a page reload
@@ -68,25 +70,6 @@ module.exports = function (grunt) {
                     }
                 }
             },
-			dev2: {
-				files: {
-					'dist/dev.js': ['./tests/assets/test-classes.js']
-				},
-				options: {
-					// not using browserify-watch; it did not trigger a page reload
-					watch: false,
-					keepAlive: false,
-					external: vendorAliases,
-					browserifyOptions: {
-						debug: sourceMaps
-					},
-					transform: babelTransform,
-					postBundleCB: function (err, src, next) {
-						console.timeEnd('build');
-						next(err, src);
-					}
-				}
-			},
             prod: {
                 files: {
                     // should vendor be mixed in?
@@ -153,7 +136,7 @@ module.exports = function (grunt) {
                 // where to serve from (root is least confusing)
                 root: '.',
                 // port (if you run several projects at once these should all be different)
-                port: '9001',
+                port: '9100',
                 // host (0.0.0.0 is most versatile: it gives localhost, and it works over an Intranet)
                 host: '0.0.0.0',
                 cache: -1,
@@ -179,7 +162,7 @@ module.exports = function (grunt) {
     //
     grunt.registerTask('build-dev', function (which) {
         console.time('build');
-        grunt.task.run('browserify:dev2');
+        grunt.task.run('browserify:dev');
 
     });
 
